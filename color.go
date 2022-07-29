@@ -1,5 +1,10 @@
 package main
 
+import (
+	"math"
+)
+
+// Each component in represented by a number from 0 to 1
 type Color struct {
 	r float64
 	g float64
@@ -24,4 +29,15 @@ func (a Color) MultScalar(n float64) Color {
 
 func (a Color) MultHadamar(b Color) Color {
 	return Color{a.r * b.r, a.g * b.g, a.b * b.b}
+}
+
+func scaleColorComponent(c float64) int {
+	res := c * MAX_COLORS
+	res = math.Max(res, 0)
+	res = math.Min(res, 255)
+	return int(math.Round(res))
+}
+
+func (a Color) ToScaledRgbComponents() [3]int {
+	return [3]int{scaleColorComponent(a.r), scaleColorComponent(a.g), scaleColorComponent(a.b)}
 }

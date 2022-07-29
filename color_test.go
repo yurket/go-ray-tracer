@@ -53,3 +53,13 @@ func TestHadamarMultiplyingColors(t *testing.T) {
 	require.True(t, res.Equal(expect))
 
 }
+
+func TestColorToRgbComponentsConvertion(t *testing.T) {
+	c1 := Color{1, 0.8, 0.6}
+	colorWithNegativeNumber := Color{-0.5, 0, 0.5}
+	colorWithOutOfBoundNumber := Color{0, 0, 3}
+
+	require.Equal(t, c1.ToScaledRgbComponents(), [3]int{255, 204, 153})
+	require.Equal(t, colorWithNegativeNumber.ToScaledRgbComponents(), [3]int{0, 0, 128})
+	require.Equal(t, colorWithOutOfBoundNumber.ToScaledRgbComponents(), [3]int{0, 0, 255})
+}
