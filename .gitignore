@@ -1,4 +1,5 @@
 .vscode/
+go-ray-tracer-challenge
 
 # Binaries for programs and plugins
 *.exe

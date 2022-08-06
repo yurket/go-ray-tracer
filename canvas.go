@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -25,6 +27,11 @@ func newCanvas(width int, height int) Canvas {
 }
 
 func (c *Canvas) WritePixel(x int, y int, color Color) {
+	if (x < 0 || x >= c.width) || (y < 0 || y >= c.height) {
+		fmt.Printf("WARN: pixel coordinate out of bound [%d, %d] with value x: %d, y: %d\n", c.width, c.height, x, y)
+		return
+	}
+
 	c.pixels[x][y] = color
 }
 
@@ -38,6 +45,15 @@ func (c *Canvas) Fill(color Color) {
 			c.WritePixel(x, y, color)
 		}
 	}
+}
+
+func (c *Canvas) ToCanvasCoordinates(x float64, y float64) (int, int) {
+	canvas_x, canvas_y := int(math.Round(x)), int(math.Round(y))
+
+	// Since Y coordinate in canvas is upside-down, we need to convert
+	// "world" Y coordinate to canvas Y coordinate
+	canvas_y = c.height - canvas_y
+	return canvas_x, canvas_y
 }
 
 func (c *Canvas) ppmHeader() string {
@@ -72,4 +88,14 @@ func (c *Canvas) ppmPixelData() string {
 
 func (c *Canvas) PpmData() string {
 	return c.ppmHeader() + c.ppmPixelData()
+}
+
+func (c *Canvas) SavePpm(filename string) {
+	f, err := os.Create(filename)
+	if err != nil {
+		panic("Failed to create file!")
+	}
+
+	f.WriteString(c.PpmData())
+	fmt.Printf("Succsessfully written \"%s\"\n", filename)
 }

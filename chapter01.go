@@ -21,12 +21,12 @@ func tick(env environment, proj projectile) projectile {
 }
 
 func Chapter01Projectile() {
-	env := environment{Vector(0, -0.1, 0), Vector(-0.01, 0, 0)}
-	proj := projectile{Point(0, 1, 0), Normalize(Vector(1, 1, 0))}
+	env := environment{gravity: Vector(0, -0.1, 0), wind: Vector(-0.01, 0, 0)}
+	proj := projectile{position: Point(0, 1, 0), velocity: Normalize(Vector(1, 1, 0))}
 	i := 0
 	for ; proj.position.y >= 0; i++ {
 		fmt.Printf("iter %d, pos: %3.3f, vel: %3.2f\n", i, proj.position, proj.velocity)
 		proj = tick(env, proj)
 	}
-	fmt.Printf("Projectile hit the ground on tick %d", i)
+	fmt.Printf("Projectile hit the ground on tick %d\n", i)
 }

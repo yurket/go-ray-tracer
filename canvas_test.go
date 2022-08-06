@@ -23,11 +23,26 @@ func Test_newCanvas(t *testing.T) {
 
 func TestWritingPixelsToACanvas(t *testing.T) {
 	c := newCanvas(10, 20)
-	RED := Color{1, 0, 0}
 
 	c.WritePixel(2, 3, RED)
 
 	require.True(t, c.PixelAt(2, 3).Equal(RED))
+}
+
+func TestWritingPixelsOutOfCanvasBoundsHasNoEffectOnCanvas(t *testing.T) {
+	c := newCanvas(100, 100)
+
+	require.NotPanics(t, func() { c.WritePixel(101, 99, GREEN) })
+	require.NotPanics(t, func() { c.WritePixel(99, 101, GREEN) })
+
+	// TODO: test, that canvas are left intact. For that, a canvas.DeepCopy() function should implemented first
+}
+
+func TestGettingPixelValueAtOutOfBoundCanvasCooridnatePanics(t *testing.T) {
+	c := newCanvas(2, 2)
+
+	require.Panics(t, func() { c.PixelAt(3, 2) })
+	require.Panics(t, func() { c.PixelAt(2, 3) })
 }
 
 func TestCorrectPpmHeader(t *testing.T) {
