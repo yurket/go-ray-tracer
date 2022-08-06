@@ -22,11 +22,11 @@ func Vector(x float64, y float64, z float64) Tuple {
 	return Tuple{x, y, z, 0.0}
 }
 
-func IsPoint(t Tuple) bool {
+func (t *Tuple) IsPoint() bool {
 	return equal_fp(t.w, 1.0)
 }
 
-func IsVector(t Tuple) bool {
+func (t *Tuple) IsVector() bool {
 	return equal_fp(t.w, 0.0)
 }
 
@@ -41,15 +41,15 @@ func equal(a Tuple, b Tuple) bool {
 	return equal_fp(a.x, b.x) && (equal_fp(a.y, b.y) && equal_fp(a.z, b.z) && equal_fp(a.w, b.w))
 }
 
-func Add(a Tuple, b Tuple) Tuple {
-	if IsPoint(a) && IsPoint(b) {
+func (a Tuple) Add(b Tuple) Tuple {
+	if a.IsPoint() && b.IsPoint() {
 		panic("Can't add two points!")
 	}
 
 	return Tuple{a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}
 }
 
-func Sub(a Tuple, b Tuple) Tuple {
+func (a Tuple) Sub(b Tuple) Tuple {
 	w := a.w - b.w
 	if w < 0 {
 		panic("Can't subtract point from vector!")
@@ -57,23 +57,23 @@ func Sub(a Tuple, b Tuple) Tuple {
 	return Tuple{a.x - b.x, a.y - b.y, a.z - b.z, w}
 }
 
-func Negate(t Tuple) Tuple {
+func (t Tuple) Negate() Tuple {
 	return Tuple{-t.x, -t.y, -t.z, -t.w}
 }
 
-func Mul(t Tuple, c float64) Tuple {
+func (t Tuple) Mul(c float64) Tuple {
 	return Tuple{t.x * c, t.y * c, t.z * c, t.w * c}
 }
 
-func Div(t Tuple, c float64) Tuple {
+func (t Tuple) Div(c float64) Tuple {
 	if equal_fp(c, 0) {
 		panic("Can't divide by zero!")
 	}
 	return Tuple{t.x / c, t.y / c, t.z / c, t.w / c}
 }
 
-func Magnitude(t Tuple) float64 {
-	if !IsVector(t) {
+func (t Tuple) Magnitude() float64 {
+	if !t.IsVector() {
 		panic("Magnitude isn't applicable to non-Vectors!")
 	}
 
@@ -81,21 +81,21 @@ func Magnitude(t Tuple) float64 {
 	return math.Sqrt(t.x*t.x + t.y*t.y + t.z*t.z)
 }
 
-func Normalize(t Tuple) Tuple {
-	m := Magnitude(t)
+func (t Tuple) Normalize() Tuple {
+	m := t.Magnitude()
 	return Tuple{t.x / m, t.y / m, t.z / m, t.w / m}
 }
 
-func Dot(a Tuple, b Tuple) float64 {
-	if !IsVector(a) || !IsVector(b) {
+func (a Tuple) Dot(b Tuple) float64 {
+	if !a.IsVector() || !b.IsVector() {
 		panic("Dot product isn't applicable to non-Vectors!")
 	}
 
 	return a.x*b.x + a.y*b.y + a.z*b.z
 }
 
-func Cross(a Tuple, b Tuple) Tuple {
-	if !IsVector(a) || !IsVector(b) {
+func (a Tuple) Cross(b Tuple) Tuple {
+	if !a.IsVector() || !b.IsVector() {
 		panic("Cross product isn't applicable to non-Vectors!")
 	}
 
