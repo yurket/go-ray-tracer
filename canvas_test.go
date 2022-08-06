@@ -1,8 +1,10 @@
 package main
 
 import (
+	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -96,4 +98,26 @@ func TestPpmFilesTerminatedByNewLineCharacter(t *testing.T) {
 	ppmData := canvas.PpmData()
 
 	require.True(t, strings.HasSuffix(ppmData, "\n"))
+}
+
+func TestCreatingAndSavingLargePpmFileShouldBeFast(t *testing.T) {
+	testFilename := "testLargeCanvas.ppm"
+	timeout := time.After(2 * time.Second)
+	done := make(chan bool)
+	go func() {
+		canvas := newCanvas(500, 500)
+		canvas.SavePpm(testFilename)
+
+		done <- true
+	}()
+
+	select {
+	case <-timeout:
+		os.Remove(testFilename)
+		t.Fatal("Test didn't finish in time!")
+
+	case <-done:
+		require.FileExists(t, testFilename)
+		os.Remove(testFilename)
+	}
 }

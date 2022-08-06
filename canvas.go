@@ -65,7 +65,7 @@ func (c *Canvas) ppmHeader() string {
 
 func (c *Canvas) ppmPixelData() string {
 	const MAX_PPM_LINE_LEN = 70
-	result := ""
+	var result strings.Builder
 	for y := 0; y < c.height; y++ {
 		line := ""
 		for x := 0; x < c.width; x++ {
@@ -74,16 +74,17 @@ func (c *Canvas) ppmPixelData() string {
 				componentString := strconv.Itoa(component)
 				if len(line)+len(componentString) >= MAX_PPM_LINE_LEN {
 					line = strings.Trim(line, " ")
-					result += line + "\n"
+					result.WriteString(line + "\n")
 					line = ""
 				}
 				line += componentString + " "
 			}
 		}
 		line = strings.Trim(line, " ")
-		result += line + "\n"
+		result.WriteString(line + "\n")
 	}
-	return result
+
+	return result.String()
 }
 
 func (c *Canvas) PpmData() string {
