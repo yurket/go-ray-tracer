@@ -10,7 +10,11 @@ type Tuple struct {
 	w float64
 }
 
-func newTuple() Tuple {
+func newTuple(x float64, y float64, z float64, w float64) Tuple {
+	return Tuple{x, y, z, w}
+}
+
+func newZeroTuple() Tuple {
 	return Tuple{0, 0, 0, 0}
 }
 
@@ -37,7 +41,7 @@ func equal_fp(a float64, b float64) bool {
 	return math.Abs(diff) < EPSILON
 }
 
-func equal(a Tuple, b Tuple) bool {
+func (a Tuple) Equal(b Tuple) bool {
 	return equal_fp(a.x, b.x) && (equal_fp(a.y, b.y) && equal_fp(a.z, b.z) && equal_fp(a.w, b.w))
 }
 
@@ -100,4 +104,16 @@ func (a Tuple) Cross(b Tuple) Tuple {
 	}
 
 	return Vector(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x)
+}
+
+// returns a so called column-vector
+func (a Tuple) ToMatrix() *Matrix {
+	m := newMatrix([][]float64{
+		{a.x},
+		{a.y},
+		{a.z},
+		{a.w},
+	})
+
+	return m
 }
