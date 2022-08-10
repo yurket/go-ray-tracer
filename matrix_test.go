@@ -13,53 +13,53 @@ func TestCanCreateAndAccess4x4MatrixElements(t *testing.T) {
 		{9, 10, 11, 12},
 		{13.5, 14.5, 15.5, 16.5}})
 
-	require.EqualValues(t, m.At(0, 0), 1)
-	require.EqualValues(t, m.At(1, 0), 5.5)
-	require.EqualValues(t, m.At(2, 3), 12)
-	require.EqualValues(t, m.At(3, 1), 14.5)
+	require.EqualValues(t, 1, m.At(0, 0))
+	require.EqualValues(t, 5.5, m.At(1, 0))
+	require.EqualValues(t, 12, m.At(2, 3))
+	require.EqualValues(t, 14.5, m.At(3, 1))
 }
 
 func TestCreatingMatricesWithArbitrarySizes(t *testing.T) {
 	m1x3 := newMatrix([][]float64{{1, 1, 1}})
 	rows, cols := m1x3.Shape()
-	require.EqualValues(t, rows, 1)
-	require.EqualValues(t, cols, 3)
-	require.EqualValues(t, m1x3.At(0, 2), 1)
+	require.EqualValues(t, 1, rows)
+	require.EqualValues(t, 3, cols)
+	require.EqualValues(t, 1, m1x3.At(0, 2))
 
 	m3x1 := newMatrix([][]float64{{2}, {2}, {2}})
 	rows, cols = m3x1.Shape()
-	require.EqualValues(t, rows, 3)
-	require.EqualValues(t, cols, 1)
-	require.EqualValues(t, m3x1.At(2, 0), 2)
+	require.EqualValues(t, 3, rows)
+	require.EqualValues(t, 1, cols)
+	require.EqualValues(t, 2, m3x1.At(2, 0))
 
 	m2x2 := newMatrix([][]float64{{3, 3}, {3, 3}})
 	rows, cols = m2x2.Shape()
-	require.EqualValues(t, rows, 2)
-	require.EqualValues(t, cols, 2)
-	require.EqualValues(t, m2x2.At(1, 1), 3)
+	require.EqualValues(t, 2, rows)
+	require.EqualValues(t, 2, cols)
+	require.EqualValues(t, 3, m2x2.At(1, 1))
 
 	m3x3 := newMatrix([][]float64{{4, 4, 4}, {4, 4, 4}, {4, 4, 4}})
 	rows, cols = m3x3.Shape()
-	require.EqualValues(t, rows, 3)
-	require.EqualValues(t, cols, 3)
-	require.EqualValues(t, m3x3.At(0, 2), 4)
+	require.EqualValues(t, 3, rows)
+	require.EqualValues(t, 3, cols)
+	require.EqualValues(t, 4, m3x3.At(0, 2))
 }
 
 func TestCreatingZeroMatrix(t *testing.T) {
 	m := newZeroMatrix(2, 4)
 
-	require.EqualValues(t, m.At(0, 0), 0)
-	require.EqualValues(t, m.At(1, 3), 0)
+	require.EqualValues(t, 0, m.At(0, 0))
+	require.EqualValues(t, 0, m.At(1, 3))
 }
 
 func TestCreatingIdentityMatrix(t *testing.T) {
 	m := newIdentityMatrix(4)
 
-	require.EqualValues(t, m.At(0, 0), 1)
-	require.EqualValues(t, m.At(0, 1), 0)
-	require.EqualValues(t, m.At(1, 3), 0)
-	require.EqualValues(t, m.At(1, 1), 1)
-	require.EqualValues(t, m.At(3, 3), 1)
+	require.EqualValues(t, 1, m.At(0, 0))
+	require.EqualValues(t, 0, m.At(0, 1))
+	require.EqualValues(t, 0, m.At(1, 3))
+	require.EqualValues(t, 1, m.At(1, 1))
+	require.EqualValues(t, 1, m.At(3, 3))
 }
 
 func TestCopyingMatrix(t *testing.T) {
@@ -130,7 +130,7 @@ func TestMatrixMultiplication(t *testing.T) {
 	})
 
 	res := a.MulMat(b)
-	require.EqualValues(t, res, expect)
+	require.EqualValues(t, expect, res)
 }
 
 func TestNonSquareMatrixMultiplication(t *testing.T) {
@@ -151,7 +151,7 @@ func TestNonSquareMatrixMultiplication(t *testing.T) {
 	})
 	res := a.MulMat(b)
 
-	require.EqualValues(t, res, expect)
+	require.EqualValues(t, expect, res)
 }
 
 func TestMultiplicationOnNilMatrix(t *testing.T) {
@@ -246,7 +246,7 @@ func TestComputingDeterminantOf2x2Matrix(t *testing.T) {
 		{-3, 2},
 	})
 
-	require.EqualValues(t, m.Determinant(), 17)
+	require.EqualValues(t, 17, m.Determinant())
 }
 
 func TestGettingSubmatrixOf3x3Matrix(t *testing.T) {
@@ -290,7 +290,7 @@ func Test3x3MatrixMinor(t *testing.T) {
 		{6, -1, 5},
 	})
 
-	require.EqualValues(t, m.Minor(1, 0), 25)
+	require.EqualValues(t, 25, m.Minor(1, 0))
 }
 
 func Test3x3MatrixCofactor(t *testing.T) {
@@ -436,5 +436,3 @@ func TestMatrixInverseProperty(t *testing.T) {
 
 	require.True(t, shouldBeA.Equal(a))
 }
-
-// TODO: Change all "Expects" to correct order of arguments: expected, then actual
