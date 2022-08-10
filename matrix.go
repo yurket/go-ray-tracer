@@ -37,6 +37,15 @@ func newIdentityMatrix(rowsAndCols int) *Matrix {
 	return m
 }
 
+func (m *Matrix) Copy() *Matrix {
+	newData := make([][]float64, m.rows)
+	for i := 0; i < m.rows; i++ {
+		newData[i] = make([]float64, 0, m.columns)
+		newData[i] = append(newData[i], m.data[i]...)
+	}
+	return &Matrix{m.rows, m.columns, newData}
+}
+
 func (m *Matrix) At(row int, col int) float64 {
 	return m.data[row][col]
 }
@@ -59,7 +68,7 @@ func (a *Matrix) Equal(b *Matrix) bool {
 	return true
 }
 
-func (a *Matrix) Mul(b *Matrix) *Matrix {
+func (a *Matrix) MulMat(b *Matrix) *Matrix {
 	if a.rows == 0 || a.columns == 0 || b.rows == 0 || b.columns == 0 {
 		panic("Matrix with one of the dimensions == 0!")
 	}
@@ -79,6 +88,19 @@ func (a *Matrix) Mul(b *Matrix) *Matrix {
 		}
 	}
 	return res
+}
+
+func (a *Matrix) Mul(num float64) *Matrix {
+	for i := 0; i < a.rows; i++ {
+		for j := 0; j < a.columns; j++ {
+			a.data[i][j] *= num
+		}
+	}
+	return a
+}
+
+func (a *Matrix) Div(num float64) *Matrix {
+	return a.Mul(1.0 / num)
 }
 
 // Converst column-vector to a tuple
@@ -108,7 +130,7 @@ func (a *Matrix) IsSquare() bool {
 
 func (a *Matrix) MulTuple(t Tuple) Tuple {
 	columnVector := t.ToMatrix()
-	res := a.Mul(columnVector)
+	res := a.MulMat(columnVector)
 	return res.ToTuple()
 }
 
@@ -122,9 +144,83 @@ func (a *Matrix) Transpose() *Matrix {
 	return transposed
 }
 
-func (a *Matrix) Det2() float64 {
-	if !a.IsSquare() || a.rows > 2 {
-		panic("Not implemented!")
+func (a *Matrix) panicIfWrongDimensions() {
+	if !a.IsSquare() {
+		panic(fmt.Sprintf("Matrix [%d, %d] should be square!", a.rows, a.columns))
 	}
-	return a.data[0][0]*a.data[1][1] - a.data[0][1]*a.data[1][0]
+	if a.rows > 4 {
+		panic(fmt.Sprintf("Matrix [%d, %d] should not exceed dimension 4x4!", a.rows, a.columns))
+	}
+}
+
+func (a *Matrix) Determinant() float64 {
+	a.panicIfWrongDimensions()
+
+	if a.rows == 2 {
+		return a.data[0][0]*a.data[1][1] - a.data[0][1]*a.data[1][0]
+	}
+
+	sum := 0.0
+	for j := 0; j < a.columns; j++ {
+		sum += a.data[0][j] * a.Cofactor(0, j)
+	}
+	return sum
+}
+
+func removeColumn(slice []float64, s int) []float64 {
+	return append(slice[:s], slice[s+1:]...)
+}
+func removeRow(slice [][]float64, s int) [][]float64 {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func (a *Matrix) Submatrix(rowToDelete int, colToDelete int) *Matrix {
+	a.panicIfWrongDimensions()
+
+	submatrix := a.Copy()
+
+	for i := 0; i < a.rows; i++ {
+		submatrix.data[i] = removeColumn(submatrix.data[i], colToDelete)
+	}
+	submatrix.data = removeRow(submatrix.data, rowToDelete)
+
+	submatrix.rows = a.rows - 1
+	submatrix.columns = a.columns - 1
+	return submatrix
+}
+
+func (a *Matrix) Minor(row int, col int) float64 {
+	a.panicIfWrongDimensions()
+
+	return a.Submatrix(row, col).Determinant()
+}
+
+func (a *Matrix) Cofactor(row int, col int) float64 {
+	a.panicIfWrongDimensions()
+
+	isNegationNeeded := (row+col)%2 == 1
+	if isNegationNeeded {
+		return -a.Minor(row, col)
+	}
+	return a.Minor(row, col)
+}
+
+func (a *Matrix) IsInvertible() bool {
+	return a.Determinant() != 0
+}
+
+func (a *Matrix) Inverse() *Matrix {
+	if !a.IsInvertible() {
+		panic("Trying to invert non-invertible matrix!")
+	}
+
+	cofactors := newZeroMatrix(a.rows, a.columns)
+	for i := 0; i < a.rows; i++ {
+		for j := 0; j < a.columns; j++ {
+			cofactors.data[i][j] = a.Cofactor(i, j)
+		}
+	}
+
+	cofactors = cofactors.Transpose()
+	return cofactors.Div(a.Determinant())
 }
