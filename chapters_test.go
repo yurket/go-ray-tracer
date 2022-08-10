@@ -24,3 +24,7 @@ func TestChapter02(t *testing.T) {
 		panic("Can't remove file after tesintg Chapter02!")
 	}
 }
+
+func TestChapter03(t *testing.T) {
+	require.NotPanics(t, func() { Chapter03MatrixTransforms() })
+}
