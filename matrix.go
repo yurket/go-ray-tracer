@@ -224,3 +224,19 @@ func (a *Matrix) Inverse() *Matrix {
 	cofactors = cofactors.Transpose()
 	return cofactors.Div(a.Determinant())
 }
+
+func (a *Matrix) ToString() string {
+	res := ""
+	for i := 0; i < a.rows; i++ {
+		res += "|"
+		for j := 0; j < a.columns; j++ {
+			ending := ", "
+			if j == a.columns-1 {
+				ending = " "
+			}
+			res += fmt.Sprintf("%6.2f%s", a.data[i][j], ending)
+		}
+		res += "|\n"
+	}
+	return res
+}

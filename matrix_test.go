@@ -436,3 +436,17 @@ func TestMatrixInverseProperty(t *testing.T) {
 
 	require.True(t, shouldBeA.Equal(a))
 }
+
+func TestToStringWorks(t *testing.T) {
+	m := newMatrix([][]float64{
+		{9, 3, 0, 9},
+		{-5, -2, -6, -3},
+		{-4, 9, 6, 4},
+		{-7, 6, 6, 2},
+	})
+
+	s := m.ToString()
+	require.Contains(t, s, "9")
+	require.Contains(t, s, "-6")
+	require.Contains(t, s, "2")
+}

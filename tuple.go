@@ -1,6 +1,8 @@
 package main
 
-import "math"
+import (
+	"math"
+)
 
 // w represents whether it's a vector or a point
 type Tuple struct {
