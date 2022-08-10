@@ -3,7 +3,7 @@
 <div align="center">
 
 
-[![Go](https://github.com/yurket/go-ray-tracer-challenge/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/yurket/go-ray-tracer-challenge/actions/workflows/go.yml)
+[![Go](https://github.com/yurket/go-ray-tracer-challenge/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/yurket/go-ray-tracer-challenge/actions/workflows/go.yml) [![Coverage Status](https://coveralls.io/repos/github/yurket/go-ray-tracer-challenge/badge.svg?branch=main)](https://coveralls.io/github/yurket/go-ray-tracer-challenge?branch=main)
 
 </div>
 
