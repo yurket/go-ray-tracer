@@ -21,11 +21,11 @@ func newZeroTuple() Tuple {
 	return Tuple{0, 0, 0, 0}
 }
 
-func Point(x float64, y float64, z float64) Tuple {
+func newPoint(x float64, y float64, z float64) Tuple {
 	return Tuple{x, y, z, 1.0}
 }
 
-func Vector(x float64, y float64, z float64) Tuple {
+func newVector(x float64, y float64, z float64) Tuple {
 	return Tuple{x, y, z, 0.0}
 }
 
@@ -106,7 +106,7 @@ func (a Tuple) Cross(b Tuple) Tuple {
 		panic("Cross product isn't applicable to non-Vectors!")
 	}
 
-	return Vector(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x)
+	return newVector(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x)
 }
 
 // returns a so called column-vector

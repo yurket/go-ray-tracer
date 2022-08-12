@@ -9,8 +9,8 @@ func Chapter02DrawProjectilePpm(ppmFilename string) {
 	HEIGHT := 500
 	canvas := newCanvas(WIDTH, HEIGHT)
 
-	env := environment{gravity: Vector(0, -0.1, 0), wind: Vector(-0.01, 0, 0)}
-	proj := projectile{position: Point(0, 10, 0), velocity: Vector(6, 9.5, 0)}
+	env := environment{gravity: newVector(0, -0.1, 0), wind: newVector(-0.01, 0, 0)}
+	proj := projectile{position: newPoint(0, 10, 0), velocity: newVector(6, 9.5, 0)}
 	i := 0
 	for ; proj.position.y >= 0; i++ {
 		pos := proj.position
