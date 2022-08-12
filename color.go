@@ -11,9 +11,11 @@ type Color struct {
 	b float64
 }
 
+var BLACK Color = Color{0, 0, 0}
 var RED Color = Color{1, 0, 0}
 var GREEN Color = Color{0, 1, 0}
 var BLUE Color = Color{0, 0, 1}
+var WHITE Color = Color{1, 1, 1}
 
 func (a Color) Equal(b Color) bool {
 	return equal_fp(a.r, b.r) && equal_fp(a.g, b.g) && equal_fp(a.b, b.b)
