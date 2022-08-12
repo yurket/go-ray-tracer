@@ -4,7 +4,8 @@ import (
 	"math"
 )
 
-// w represents whether it's a vector or a point
+// w represents whether it's a vector or a point:
+// w == 1 for point, w == 0 for vector
 type Tuple struct {
 	x float64
 	y float64
