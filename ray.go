@@ -1,6 +1,9 @@
 package main
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 // TODO: Can I do new types Point and Vector inherited from Tuple?
 type Ray struct {
@@ -22,7 +25,7 @@ func (r *Ray) Position(time float64) Tuple {
 	return r.origin.Add(r.direction.Mul(time))
 }
 
-func (r *Ray) Intersect(s Sphere) []float64 {
+func (r *Ray) Intersect(s Sphere) []Intersection {
 	sphereToRay := r.origin.Sub(newPoint(0, 0, 0))
 	a := r.direction.Dot(r.direction)
 	b := 2 * r.direction.Dot(sphereToRay)
@@ -30,13 +33,17 @@ func (r *Ray) Intersect(s Sphere) []float64 {
 	discriminant := b*b - 4*a*c
 
 	if discriminant < 0 {
-		return []float64{}
+		return []Intersection{}
 	}
 
 	t1 := (-b - math.Sqrt(discriminant)) / (2 * a)
 	t2 := (-b + math.Sqrt(discriminant)) / (2 * a)
 
-	return []float64{math.Min(t1, t2), math.Max(t1, t2)}
+	// TODO: here the Sphere object s is being copied. It may need be fixed
+	return []Intersection{
+		newIntersection(math.Min(t1, t2), s),
+		newIntersection(math.Max(t1, t2), s),
+	}
 }
 
 type Sphere struct {
@@ -47,4 +54,27 @@ type Sphere struct {
 
 func newSphere(id string) Sphere {
 	return Sphere{id, newPoint(0, 0, 0), 1.0}
+}
+
+type Intersection struct {
+	t      float64
+	object Sphere
+}
+
+func newIntersection(t float64, object Sphere) Intersection {
+	return Intersection{t, object}
+}
+
+func Hit(intersections []Intersection) (Intersection, bool) {
+	sort.Slice(intersections, func(i, j int) bool { return intersections[i].t < intersections[j].t })
+
+	for _, intersection := range intersections {
+		if intersection.t > 0 {
+			return intersection, true
+		}
+	}
+
+	// TODO: doesn't look right
+	dummy := newIntersection(0, newSphere(""))
+	return dummy, false
 }

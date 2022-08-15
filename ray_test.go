@@ -32,8 +32,8 @@ func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
 	xs := r.Intersect(s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 4, xs[0])
-	require.EqualValues(t, 6, xs[1])
+	require.EqualValues(t, 4, xs[0].t)
+	require.EqualValues(t, 6, xs[1].t)
 }
 
 func TestRayIntersectsSphereAtATangent(t *testing.T) {
@@ -43,7 +43,7 @@ func TestRayIntersectsSphereAtATangent(t *testing.T) {
 	xs := r.Intersect(s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 5.0, xs[0])
+	require.EqualValues(t, 5.0, xs[0].t)
 	require.True(t, xs[0] == xs[1])
 }
 
@@ -64,8 +64,8 @@ func TestRayOriginatesInsideSphere(t *testing.T) {
 	xs := r.Intersect(s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, -1.0, xs[0])
-	require.EqualValues(t, 1.0, xs[1])
+	require.EqualValues(t, -1.0, xs[0].t)
+	require.EqualValues(t, 1.0, xs[1].t)
 }
 
 func TestSphereCompletelyBehindRay(t *testing.T) {
@@ -75,9 +75,72 @@ func TestSphereCompletelyBehindRay(t *testing.T) {
 	xs := r.Intersect(s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, -6.0, xs[0])
-	require.EqualValues(t, -4.0, xs[1])
+	require.EqualValues(t, -6.0, xs[0].t)
+	require.EqualValues(t, -4.0, xs[1].t)
+}
 
+func TestAndIntersectionEncapsulatesTAndObject(t *testing.T) {
+	s := newSphere("sphere_id")
+	i := newIntersection(3.5, s)
+
+	require.EqualValues(t, 3.5, i.t)
+	require.EqualValues(t, s, i.object)
+}
+
+func TestIntersectSetsTheObjectOnTheIntersection(t *testing.T) {
+	origin, direction := newPoint(0, 0, -5), newVector(0, 0, 1)
+	r := newRay(origin, direction)
+	s := newSphere("sphere_id")
+	xs := r.Intersect(s)
+
+	require.EqualValues(t, 2, len(xs))
+	require.EqualValues(t, s, xs[0].object)
+	require.EqualValues(t, s, xs[1].object)
+}
+
+func TestHitWithAllIntersectionsWithPositiveT(t *testing.T) {
+	s := newSphere("sphere_id")
+	i1 := newIntersection(1, s)
+	i2 := newIntersection(2, s)
+	xs := []Intersection{i1, i2}
+	i, ok := Hit(xs)
+
+	require.True(t, ok)
+	require.EqualValues(t, i, i1)
+}
+
+func TestHitWithSomeIntersectionsWithNegativeT(t *testing.T) {
+	s := newSphere("sphere_id")
+	i1 := newIntersection(-1, s)
+	i2 := newIntersection(1, s)
+	xs := []Intersection{i1, i2}
+	i, ok := Hit(xs)
+
+	require.True(t, ok)
+	require.EqualValues(t, i, i2)
+}
+
+func TestNoHitWhenAllIntersectionsHaveNegativeT(t *testing.T) {
+	s := newSphere("sphere_id")
+	i1 := newIntersection(-1, s)
+	i2 := newIntersection(-2, s)
+	xs := []Intersection{i1, i2}
+	_, ok := Hit(xs)
+
+	require.False(t, ok)
+}
+
+func TestHitIsAlwaysTheLowestNonnegativeIntersection(t *testing.T) {
+	s := newSphere("sphere_id")
+	i1 := newIntersection(5, s)
+	i2 := newIntersection(6, s)
+	i3 := newIntersection(-3, s)
+	i4 := newIntersection(2, s)
+	xs := []Intersection{i1, i2, i3, i4}
+	i, ok := Hit(xs)
+
+	require.True(t, ok)
+	require.EqualValues(t, i, i4)
 }
 
 // TODO: test spheres creation - 2 spheres with same id?
