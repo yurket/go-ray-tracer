@@ -27,9 +27,14 @@ func (r *Ray) Position(time float64) Tuple {
 }
 
 func (r *Ray) Intersect(s Sphere) []Intersection {
-	sphereToRay := r.origin.Sub(newPoint(0, 0, 0))
-	a := r.direction.Dot(r.direction)
-	b := 2 * r.direction.Dot(sphereToRay)
+	// Inverse-transform the ray instead of transforming the sphere.
+	// It makes easy the math.
+	t := s.Transform()
+	transformedRay := r.ApplyTransform(t.Inverse())
+
+	sphereToRay := transformedRay.origin.Sub(newPoint(0, 0, 0))
+	a := transformedRay.direction.Dot(transformedRay.direction)
+	b := 2 * transformedRay.direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
 	discriminant := b*b - 4*a*c
 
@@ -47,14 +52,34 @@ func (r *Ray) Intersect(s Sphere) []Intersection {
 	}
 }
 
+func (r *Ray) ApplyTransform(m *Matrix) Ray {
+	return newRay(m.MulTuple(r.origin), m.MulTuple(r.direction))
+}
+
 type Sphere struct {
-	id     string
-	origin Tuple
-	radius float64
+	id        string
+	origin    Tuple
+	radius    float64
+	transform Matrix
 }
 
 func newSphere(id string) Sphere {
-	return Sphere{id, newPoint(0, 0, 0), 1.0}
+	return Sphere{id, newPoint(0, 0, 0), 1.0, *newIdentityMatrix(4)}
+}
+
+func (s *Sphere) Equal(s2 *Sphere) bool {
+	return s.id == s2.id &&
+		s.origin.Equal(s2.origin) &&
+		s.radius == s2.radius &&
+		s.transform.Equal(&s2.transform)
+}
+
+func (s *Sphere) Transform() Matrix {
+	return s.transform
+}
+
+func (s *Sphere) SetTransform(m *Matrix) {
+	s.transform = *m
 }
 
 type Intersection struct {
@@ -64,6 +89,10 @@ type Intersection struct {
 
 func newIntersection(t float64, object Sphere) Intersection {
 	return Intersection{t, object}
+}
+
+func (i *Intersection) Equal(i2 Intersection) bool {
+	return i.t == i2.t && i.object.Equal(&i2.object)
 }
 
 func Hit(intersections []Intersection) (Intersection, bool) {
