@@ -1,4 +1,5 @@
-package main
+// TODO: Rename file or move out Sphere, Intersection in separate files
+package ray_tracer
 
 import (
 	"math"
