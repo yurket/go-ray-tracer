@@ -22,17 +22,20 @@ func newRay(origin, direction Tuple) Ray {
 	return Ray{origin, direction}
 }
 
-func (r *Ray) Position(time float64) Tuple {
+func (r *Ray) CalcPosition(time float64) Tuple {
 	return r.origin.Add(r.direction.Mul(time))
 }
 
+// Finds intersection of a ray going through the center of the sphere
+// with a unit radius
 func (r *Ray) Intersect(s *Sphere) []Intersection {
 	// Inverse-transform the ray instead of transforming the sphere.
 	// It makes easy the math.
 	t := s.Transform()
 	transformedRay := r.ApplyTransform(t.Inverse())
 
-	sphereToRay := transformedRay.origin.Sub(newPoint(0, 0, 0))
+	sphereOrigin := newPoint(0, 0, 0)
+	sphereToRay := transformedRay.origin.Sub(sphereOrigin)
 	a := transformedRay.direction.Dot(transformedRay.direction)
 	b := 2 * transformedRay.direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
@@ -58,18 +61,16 @@ func (r *Ray) ApplyTransform(m *Matrix) Ray {
 type Sphere struct {
 	id        string
 	origin    Tuple
-	radius    float64
 	transform Matrix
 }
 
 func newSphere(id string) Sphere {
-	return Sphere{id, newPoint(0, 0, 0), 1.0, *newIdentityMatrix(4)}
+	return Sphere{id, newPoint(0, 0, 0), *newIdentityMatrix(4)}
 }
 
 func (s *Sphere) Equal(s2 *Sphere) bool {
 	return s.id == s2.id &&
 		s.origin.Equal(s2.origin) &&
-		s.radius == s2.radius &&
 		s.transform.Equal(&s2.transform)
 }
 

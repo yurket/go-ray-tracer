@@ -20,10 +20,10 @@ func TestComputingRayPositionAfterElapsedTimeT(t *testing.T) {
 	origin, direction := newPoint(2, 3, 4), newVector(1, 0, 0)
 	r := newRay(origin, direction)
 
-	require.True(t, r.Position(0).Equal(newPoint(2, 3, 4)))
-	require.True(t, r.Position(1).Equal(newPoint(3, 3, 4)))
-	require.True(t, r.Position(-1).Equal(newPoint(1, 3, 4)))
-	require.True(t, r.Position(2.5).Equal(newPoint(4.5, 3, 4)))
+	require.True(t, r.CalcPosition(0).Equal(newPoint(2, 3, 4)))
+	require.True(t, r.CalcPosition(1).Equal(newPoint(3, 3, 4)))
+	require.True(t, r.CalcPosition(-1).Equal(newPoint(1, 3, 4)))
+	require.True(t, r.CalcPosition(2.5).Equal(newPoint(4.5, 3, 4)))
 }
 
 func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
