@@ -31,7 +31,7 @@ func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
 	r := newRay(origin, direction)
 	s := newSphere("sphere_id")
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, 4, xs[0].t)
@@ -43,11 +43,11 @@ func TestRayIntersectsSphereAtATangent(t *testing.T) {
 	r := newRay(origin, direction)
 	s := newSphere("sphere_id")
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, 5.0, xs[0].t)
-	require.True(t, xs[0].Equal(xs[1]))
+	require.EqualValues(t, xs[0], xs[1])
 }
 
 func TestRayMissesSphere(t *testing.T) {
@@ -55,7 +55,7 @@ func TestRayMissesSphere(t *testing.T) {
 	r := newRay(origin, direction)
 	s := newSphere("sphere_id")
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 0, len(xs))
 }
@@ -66,7 +66,7 @@ func TestRayOriginatesInsideSphere(t *testing.T) {
 	r := newRay(origin, direction)
 	s := newSphere("sphere_id")
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, -1.0, xs[0].t)
@@ -78,7 +78,7 @@ func TestSphereCompletelyBehindRay(t *testing.T) {
 	r := newRay(origin, direction)
 	s := newSphere("sphere_id")
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, -6.0, xs[0].t)
@@ -88,10 +88,10 @@ func TestSphereCompletelyBehindRay(t *testing.T) {
 func TestAndIntersectionEncapsulatesTAndObject(t *testing.T) {
 	s := newSphere("sphere_id")
 
-	i := newIntersection(3.5, s)
+	i := newIntersection(3.5, &s)
 
 	require.EqualValues(t, 3.5, i.t)
-	require.EqualValues(t, s, i.object)
+	require.EqualValues(t, s, *i.object)
 }
 
 func TestIntersectSetsTheObjectOnTheIntersection(t *testing.T) {
@@ -99,17 +99,17 @@ func TestIntersectSetsTheObjectOnTheIntersection(t *testing.T) {
 	r := newRay(origin, direction)
 	s := newSphere("sphere_id")
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, s, xs[0].object)
-	require.EqualValues(t, s, xs[1].object)
+	require.EqualValues(t, s, *xs[0].object)
+	require.EqualValues(t, s, *xs[1].object)
 }
 
 func TestHitWithAllIntersectionsWithPositiveT(t *testing.T) {
 	s := newSphere("sphere_id")
-	i1 := newIntersection(1, s)
-	i2 := newIntersection(2, s)
+	i1 := newIntersection(1, &s)
+	i2 := newIntersection(2, &s)
 	xs := []Intersection{i1, i2}
 
 	i, ok := Hit(xs)
@@ -120,8 +120,8 @@ func TestHitWithAllIntersectionsWithPositiveT(t *testing.T) {
 
 func TestHitWithSomeIntersectionsWithNegativeT(t *testing.T) {
 	s := newSphere("sphere_id")
-	i1 := newIntersection(-1, s)
-	i2 := newIntersection(1, s)
+	i1 := newIntersection(-1, &s)
+	i2 := newIntersection(1, &s)
 	xs := []Intersection{i1, i2}
 
 	i, ok := Hit(xs)
@@ -132,8 +132,8 @@ func TestHitWithSomeIntersectionsWithNegativeT(t *testing.T) {
 
 func TestNoHitWhenAllIntersectionsHaveNegativeT(t *testing.T) {
 	s := newSphere("sphere_id")
-	i1 := newIntersection(-1, s)
-	i2 := newIntersection(-2, s)
+	i1 := newIntersection(-1, &s)
+	i2 := newIntersection(-2, &s)
 	xs := []Intersection{i1, i2}
 
 	_, ok := Hit(xs)
@@ -143,10 +143,10 @@ func TestNoHitWhenAllIntersectionsHaveNegativeT(t *testing.T) {
 
 func TestHitIsAlwaysTheLowestNonnegativeIntersection(t *testing.T) {
 	s := newSphere("sphere_id")
-	i1 := newIntersection(5, s)
-	i2 := newIntersection(6, s)
-	i3 := newIntersection(-3, s)
-	i4 := newIntersection(2, s)
+	i1 := newIntersection(5, &s)
+	i2 := newIntersection(6, &s)
+	i3 := newIntersection(-3, &s)
+	i4 := newIntersection(2, &s)
 	xs := []Intersection{i1, i2, i3, i4}
 
 	i, ok := Hit(xs)
@@ -201,7 +201,7 @@ func TestIntersectingScaledSphereWithRay(t *testing.T) {
 	s := newSphere("sphere_id")
 	s.SetTransform(newScalingMatrix(2, 2, 2))
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, 3, xs[0].t)
@@ -214,7 +214,7 @@ func TestIntersectingTranslatedSphereWithRay(t *testing.T) {
 	s := newSphere("sphere_id")
 	s.SetTransform(newTranslationMatrix(5, 0, 0))
 
-	xs := r.Intersect(s)
+	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 0, len(xs))
 }

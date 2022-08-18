@@ -26,7 +26,7 @@ func (r *Ray) Position(time float64) Tuple {
 	return r.origin.Add(r.direction.Mul(time))
 }
 
-func (r *Ray) Intersect(s Sphere) []Intersection {
+func (r *Ray) Intersect(s *Sphere) []Intersection {
 	// Inverse-transform the ray instead of transforming the sphere.
 	// It makes easy the math.
 	t := s.Transform()
@@ -45,7 +45,6 @@ func (r *Ray) Intersect(s Sphere) []Intersection {
 	t1 := (-b - math.Sqrt(discriminant)) / (2 * a)
 	t2 := (-b + math.Sqrt(discriminant)) / (2 * a)
 
-	// TODO: here the Sphere object s is being copied. It may need be fixed
 	return []Intersection{
 		newIntersection(math.Min(t1, t2), s),
 		newIntersection(math.Max(t1, t2), s),
@@ -84,15 +83,11 @@ func (s *Sphere) SetTransform(m *Matrix) {
 
 type Intersection struct {
 	t      float64
-	object Sphere
+	object *Sphere
 }
 
-func newIntersection(t float64, object Sphere) Intersection {
+func newIntersection(t float64, object *Sphere) Intersection {
 	return Intersection{t, object}
-}
-
-func (i *Intersection) Equal(i2 Intersection) bool {
-	return i.t == i2.t && i.object.Equal(&i2.object)
 }
 
 func Hit(intersections []Intersection) (Intersection, bool) {
@@ -104,7 +99,6 @@ func Hit(intersections []Intersection) (Intersection, bool) {
 		}
 	}
 
-	// TODO: doesn't look right
-	dummy := newIntersection(0, newSphere(""))
+	dummy := newIntersection(0, nil)
 	return dummy, false
 }
