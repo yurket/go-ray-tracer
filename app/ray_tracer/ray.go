@@ -83,7 +83,7 @@ func (s *Sphere) SetTransform(m *Matrix) {
 }
 
 type Intersection struct {
-	t      float64
+	time   float64
 	object *Sphere
 }
 
@@ -92,10 +92,10 @@ func newIntersection(t float64, object *Sphere) Intersection {
 }
 
 func Hit(intersections []Intersection) (Intersection, bool) {
-	sort.Slice(intersections, func(i, j int) bool { return intersections[i].t < intersections[j].t })
+	sort.Slice(intersections, func(i, j int) bool { return intersections[i].time < intersections[j].time })
 
 	for _, intersection := range intersections {
-		if intersection.t > 0 {
+		if intersection.time > 0 {
 			return intersection, true
 		}
 	}

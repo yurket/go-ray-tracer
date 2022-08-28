@@ -34,8 +34,8 @@ func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
 	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 4, xs[0].t)
-	require.EqualValues(t, 6, xs[1].t)
+	require.EqualValues(t, 4, xs[0].time)
+	require.EqualValues(t, 6, xs[1].time)
 }
 
 func TestRayIntersectsSphereAtATangent(t *testing.T) {
@@ -46,7 +46,7 @@ func TestRayIntersectsSphereAtATangent(t *testing.T) {
 	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 5.0, xs[0].t)
+	require.EqualValues(t, 5.0, xs[0].time)
 	require.EqualValues(t, xs[0], xs[1])
 }
 
@@ -69,8 +69,8 @@ func TestRayOriginatesInsideSphere(t *testing.T) {
 	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, -1.0, xs[0].t)
-	require.EqualValues(t, 1.0, xs[1].t)
+	require.EqualValues(t, -1.0, xs[0].time)
+	require.EqualValues(t, 1.0, xs[1].time)
 }
 
 func TestSphereCompletelyBehindRay(t *testing.T) {
@@ -81,8 +81,8 @@ func TestSphereCompletelyBehindRay(t *testing.T) {
 	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, -6.0, xs[0].t)
-	require.EqualValues(t, -4.0, xs[1].t)
+	require.EqualValues(t, -6.0, xs[0].time)
+	require.EqualValues(t, -4.0, xs[1].time)
 }
 
 func TestAndIntersectionEncapsulatesTAndObject(t *testing.T) {
@@ -90,7 +90,7 @@ func TestAndIntersectionEncapsulatesTAndObject(t *testing.T) {
 
 	i := newIntersection(3.5, &s)
 
-	require.EqualValues(t, 3.5, i.t)
+	require.EqualValues(t, 3.5, i.time)
 	require.EqualValues(t, s, *i.object)
 }
 
@@ -204,8 +204,8 @@ func TestIntersectingScaledSphereWithRay(t *testing.T) {
 	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 3, xs[0].t)
-	require.EqualValues(t, 7, xs[1].t)
+	require.EqualValues(t, 3, xs[0].time)
+	require.EqualValues(t, 7, xs[1].time)
 }
 
 func TestIntersectingTranslatedSphereWithRay(t *testing.T) {

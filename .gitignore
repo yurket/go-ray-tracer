@@ -1,5 +1,5 @@
 .vscode/
-go-ray-tracer-challenge
+app/app
 *.ppm
 
 
