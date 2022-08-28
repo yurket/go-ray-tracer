@@ -1,8 +1,8 @@
-package main
+package ray_tracer
 
 import "math"
 
-func newTranslationMatrix(x float64, y float64, z float64) *Matrix {
+func newTranslationMatrix(x, y, z float64) *Matrix {
 	translation := newIdentityMatrix(4)
 	translation.data[0][3] = x
 	translation.data[1][3] = y
@@ -11,7 +11,7 @@ func newTranslationMatrix(x float64, y float64, z float64) *Matrix {
 	return translation
 }
 
-func newScalingMatrix(x float64, y float64, z float64) *Matrix {
+func newScalingMatrix(x, y, z float64) *Matrix {
 	scaling := newIdentityMatrix(4)
 	scaling.data[0][0] = x
 	scaling.data[1][1] = y
@@ -48,7 +48,7 @@ func newRotationZMatrix(angleInRads float64) *Matrix {
 	return rot
 }
 
-func newShearingMatrix(xToY float64, xToZ float64, yToX float64, yToZ float64, zToX float64, zToY float64) *Matrix {
+func newShearingMatrix(xToY, xToZ, yToX, yToZ, zToX, zToY float64) *Matrix {
 	shearing := newIdentityMatrix(4)
 	shearing.data[0][1] = xToY
 	shearing.data[0][2] = xToZ
@@ -59,11 +59,11 @@ func newShearingMatrix(xToY float64, xToZ float64, yToX float64, yToZ float64, z
 	return shearing
 }
 
-func (a *Matrix) Translate(x float64, y float64, z float64) *Matrix {
+func (a *Matrix) Translate(x, y, z float64) *Matrix {
 	return newTranslationMatrix(x, y, z).MulMat(a)
 }
 
-func (a *Matrix) Scale(x float64, y float64, z float64) *Matrix {
+func (a *Matrix) Scale(x, y, z float64) *Matrix {
 	return newScalingMatrix(x, y, z).MulMat(a)
 }
 
@@ -78,6 +78,6 @@ func (a *Matrix) RotateZ(angleInRads float64) *Matrix {
 	return newRotationZMatrix(angleInRads).MulMat(a)
 }
 
-func (a *Matrix) Shear(xToY float64, xToZ float64, yToX float64, yToZ float64, zToX float64, zToY float64) *Matrix {
+func (a *Matrix) Shear(xToY, xToZ, yToX, yToZ, zToX, zToY float64) *Matrix {
 	return newShearingMatrix(xToY, xToZ, yToX, yToZ, zToX, zToY).MulMat(a)
 }

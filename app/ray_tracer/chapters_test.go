@@ -1,4 +1,4 @@
-package main
+package ray_tracer
 
 import (
 	"os"
@@ -39,5 +39,18 @@ func TestChapter04DrawsClock(t *testing.T) {
 	err := os.Remove(filename)
 	if err != nil {
 		panic("Can't remove file after testing Chapter04!")
+	}
+}
+
+func TestChapter05(t *testing.T) {
+	filename := "chapter05_sphere_projection.ppm"
+
+	require.NotPanics(t, func() { Chapter05(filename) })
+	require.FileExists(t, filename)
+
+	// test cleanup
+	err := os.Remove(filename)
+	if err != nil {
+		panic("Can't remove file after testing Chapter05!")
 	}
 }

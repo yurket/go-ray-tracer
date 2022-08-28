@@ -1,4 +1,4 @@
-package main
+package ray_tracer
 
 import (
 	"math"
@@ -13,7 +13,7 @@ type Tuple struct {
 	w float64
 }
 
-func newTuple(x float64, y float64, z float64, w float64) Tuple {
+func newTuple(x, y, z, w float64) Tuple {
 	return Tuple{x, y, z, w}
 }
 
@@ -21,11 +21,11 @@ func newZeroTuple() Tuple {
 	return Tuple{0, 0, 0, 0}
 }
 
-func newPoint(x float64, y float64, z float64) Tuple {
+func newPoint(x, y, z float64) Tuple {
 	return Tuple{x, y, z, 1.0}
 }
 
-func newVector(x float64, y float64, z float64) Tuple {
+func newVector(x, y, z float64) Tuple {
 	return Tuple{x, y, z, 0.0}
 }
 
