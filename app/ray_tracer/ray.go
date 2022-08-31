@@ -30,7 +30,7 @@ func (r *Ray) CalcPosition(time float64) Tuple {
 // with a unit radius
 func (r *Ray) Intersect(s *Sphere) []Intersection {
 	// Inverse-transform the ray instead of transforming the sphere.
-	// It makes easy the math.
+	// It makes the math easier.
 	t := s.Transform()
 	transformedRay := r.ApplyTransform(t.Inverse())
 

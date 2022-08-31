@@ -188,4 +188,12 @@ func TestIndividualVsChainedTransformationsOrder(t *testing.T) {
 	require.True(t, pChained2.Equal(pChained))
 }
 
-// TODO: rename Point, Vector -> newPoint, newVector
+// Transformations transform all the space relative to the center of the coorditates, not relative
+// to the center of the object. So when scaling occurs after the translation, it scales the coordinates
+// of object as well, basically moving the center of the object.
+func TestTransformationOrderMatters(t *testing.T) {
+	t1 := newIdentityMatrix(4).Scale(5, 5, 5).Translate(1, 2, 3)
+	t2 := newIdentityMatrix(4).Translate(1, 2, 3).Scale(5, 5, 5)
+
+	require.False(t, t1.Equal(t2))
+}

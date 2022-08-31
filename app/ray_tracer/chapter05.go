@@ -12,8 +12,7 @@ func Chapter05(filename string) {
 
 	s := newSphere("ball")
 	const scale, eyeCenterXY = 20., 50
-	// TODO: Why first translate and then scale doesn't work?
-	// transform := newIdentityMatrix(4).Translate(400, 400, 0).Scale(scale, scale, scale)
+
 	transform := newIdentityMatrix(4).Scale(scale, scale, scale).Translate(eyeCenterXY, eyeCenterXY, 0)
 	s.SetTransform(transform)
 
