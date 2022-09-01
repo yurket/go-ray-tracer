@@ -82,6 +82,20 @@ func (s *Sphere) SetTransform(m *Matrix) {
 	s.transform = *m
 }
 
+func (s *Sphere) NormalAt(worldPoint Tuple) Tuple {
+	sphereCenter := newPoint(0, 0, 0)
+
+	objectPoint := s.transform.Inverse().MulTuple(worldPoint)
+	objectNormal := objectPoint.Sub(sphereCenter)
+	worldNormal := s.transform.Inverse().Transpose().MulTuple(objectNormal)
+	worldNormal.w = 0
+
+	if !worldNormal.IsVector() {
+		panic("Normal vector must be a vector!")
+	}
+	return worldNormal.Normalize()
+}
+
 type Intersection struct {
 	time   float64
 	object *Sphere

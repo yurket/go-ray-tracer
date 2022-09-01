@@ -1,6 +1,7 @@
 package ray_tracer
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -217,6 +218,68 @@ func TestIntersectingTranslatedSphereWithRay(t *testing.T) {
 	xs := r.Intersect(&s)
 
 	require.EqualValues(t, 0, len(xs))
+}
+
+func TestNormalOnSphereX(t *testing.T) {
+	s := newSphere("sphere_id")
+	n := s.NormalAt(newPoint(1, 0, 0))
+
+	expect := newVector(1, 0, 0)
+	require.True(t, n.Equal(expect))
+}
+
+func TestNormalOnSphereY(t *testing.T) {
+	s := newSphere("sphere_id")
+	n := s.NormalAt(newPoint(0, 1, 0))
+
+	expect := newVector(0, 1, 0)
+	require.True(t, n.Equal(expect))
+
+}
+func TestNormalOnSphereZ(t *testing.T) {
+	s := newSphere("sphere_id")
+	n := s.NormalAt(newPoint(0, 0, 1))
+
+	expect := newVector(0, 0, 1)
+	require.True(t, n.Equal(expect))
+}
+
+func TestNormalOnSphereNonAxial(t *testing.T) {
+	s := newSphere("sphere_id")
+	v := math.Sqrt(3) / 3.0
+	n := s.NormalAt(newPoint(v, v, v))
+
+	expect := newVector(v, v, v)
+	require.True(t, n.Equal(expect))
+}
+
+func TestNormalVectorsAreAlwaysNormalized(t *testing.T) {
+	s := newSphere("sphere_id")
+	v := math.Sqrt(3) / 3.0
+	n := s.NormalAt(newPoint(v, v, v))
+
+	expect := n.Normalize()
+	require.True(t, n.Equal(expect))
+}
+
+func TestComputingNormalOnTranslatedSphere(t *testing.T) {
+	s := newSphere("sphere_id")
+	s.SetTransform(newTranslationMatrix(0, 1, 0))
+	n := s.NormalAt(newPoint(0, 1.70711, -0.70711))
+
+	expect := newVector(0, 0.70711, -0.70711)
+	require.True(t, n.Equal(expect))
+}
+
+func TestComputingNormalOnTransformedSphere(t *testing.T) {
+	s := newSphere("sphere_id")
+	transform := newIdentityMatrix(4).RotateZ(math.Pi/5).Scale(1, 0.5, 1)
+	s.SetTransform(transform)
+	n := s.NormalAt(newPoint(0, math.Sqrt(2)/2.0, -math.Sqrt(2)/2.0))
+
+	expect := newVector(0, 0.97014, -0.24254)
+	require.True(t, n.Equal(expect))
+
 }
 
 // TODO: test spheres creation - 2 spheres with same id?
