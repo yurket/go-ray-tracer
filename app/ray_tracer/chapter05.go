@@ -10,7 +10,7 @@ func Chapter05(filename string) {
 	const height, width = 100, 100
 	canvas := newCanvas(width, height)
 
-	s := newSphere("ball")
+	s := newDefaultSphere()
 	const scale, eyeCenterXY = 20., 50
 
 	transform := newIdentityMatrix(4).Scale(scale, scale, scale).Translate(eyeCenterXY, eyeCenterXY, 0)
@@ -48,7 +48,7 @@ func Chapter05BookSolution(filename string) {
 	const canvasSize = 100
 	canvas := newCanvas(canvasSize, canvasSize)
 
-	s := newSphere("ball")
+	s := newDefaultSphere()
 
 	eyeOrigin := newPoint(0, 0, -5)
 	const wallZ, wallSize = 10, 7

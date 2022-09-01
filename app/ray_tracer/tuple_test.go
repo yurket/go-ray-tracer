@@ -186,3 +186,23 @@ func TestCrossProduct(t *testing.T) {
 	expect = newVector(1, -2, 1)
 	require.True(t, res.Equal(expect))
 }
+
+func TestReflectingVectorApprochingAt45Degrees(t *testing.T) {
+	v := newVector(1, -1, 0)
+	n := newVector(0, 1, 0)
+
+	res := v.ReflectAround(n)
+	expect := newVector(1, 1, 0)
+
+	require.True(t, res.Equal(expect))
+}
+
+func TestReflectingVectorOffSlantedSurface(t *testing.T) {
+	v := newVector(0, -1, 0)
+	n := newVector(math.Sqrt(2)/2., math.Sqrt(2)/2., 0)
+
+	res := v.ReflectAround(n)
+	expect := newVector(1, 0, 0)
+
+	require.True(t, res.Equal(expect))
+}
