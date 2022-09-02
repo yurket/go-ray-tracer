@@ -1,6 +1,7 @@
 package ray_tracer
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -11,6 +12,13 @@ func TestChapter01(t *testing.T) {
 	require.NotPanics(t, func() { Chapter01Projectile() })
 }
 
+func cleanup(filename string) {
+	err := os.Remove(filename)
+	if err != nil {
+		panic(fmt.Sprintf("Can't remove file %q!", filename))
+	}
+}
+
 func TestChapter02(t *testing.T) {
 	filename := "chapter02_test.ppm"
 
@@ -18,11 +26,7 @@ func TestChapter02(t *testing.T) {
 
 	require.FileExists(t, filename)
 
-	// test cleanup
-	err := os.Remove(filename)
-	if err != nil {
-		panic("Can't remove file after testing Chapter02!")
-	}
+	cleanup(filename)
 }
 
 func TestChapter03(t *testing.T) {
@@ -35,11 +39,7 @@ func TestChapter04DrawsClock(t *testing.T) {
 
 	require.FileExists(t, filename)
 
-	// test cleanup
-	err := os.Remove(filename)
-	if err != nil {
-		panic("Can't remove file after testing Chapter04!")
-	}
+	cleanup(filename)
 }
 
 func TestChapter05(t *testing.T) {
@@ -48,9 +48,14 @@ func TestChapter05(t *testing.T) {
 	require.NotPanics(t, func() { Chapter05(filename) })
 	require.FileExists(t, filename)
 
-	// test cleanup
-	err := os.Remove(filename)
-	if err != nil {
-		panic("Can't remove file after testing Chapter05!")
-	}
+	cleanup(filename)
+}
+
+func TestChapter06LightAndShading(t *testing.T) {
+	filename := "chapter06_lighted_sphere.ppm"
+
+	require.NotPanics(t, func() { Chapter06LightAndShading(filename) })
+	require.FileExists(t, filename)
+
+	cleanup(filename)
 }

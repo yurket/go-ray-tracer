@@ -164,7 +164,7 @@ func newDefaultMaterial() Material {
 	return Material{WHITE, 0.1, 0.9, 0.9, 200.}
 }
 
-func lighting(material Material, light PointLight, position, eyeV, normalV Tuple) Color {
+func CalcLighting(material Material, light PointLight, position, eyeV, normalV Tuple) Color {
 	if !position.IsPoint() {
 		panic("Position must be a point!")
 	}

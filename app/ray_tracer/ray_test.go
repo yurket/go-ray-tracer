@@ -327,7 +327,7 @@ func TestLightingWithEyeBetweenLightAndSurface(t *testing.T) {
 
 	i := 0.1 + 0.9 + 0.9
 	expect := newColor(i, i, i)
-	res := lighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
@@ -340,7 +340,7 @@ func TestLightingWithEyeOffset45DegreesBetweenLightAndSurface(t *testing.T) {
 
 	i := 0.1 + 0.9 + 0
 	expect := newColor(i, i, i)
-	res := lighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
@@ -353,7 +353,7 @@ func TestLightingWithEyeOppositeSurfaceAndLightOffset45Degrees(t *testing.T) {
 
 	i := 0.1 + 0.9*COS45 + 0
 	expect := newColor(i, i, i)
-	res := lighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
@@ -366,7 +366,7 @@ func TestLightingWithEyeInThePathOfReflectionVector(t *testing.T) {
 
 	i := 0.1 + 0.9*COS45 + 0.9
 	expect := newColor(i, i, i)
-	res := lighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
@@ -379,7 +379,7 @@ func TestLightingWithLightBehindTheSurface(t *testing.T) {
 
 	i := 0.1 + 0 + 0
 	expect := newColor(i, i, i)
-	res := lighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
