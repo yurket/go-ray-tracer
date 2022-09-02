@@ -58,14 +58,30 @@ func (r *Ray) ApplyTransform(m *Matrix) Ray {
 	return newRay(m.MulTuple(r.origin), m.MulTuple(r.direction))
 }
 
+// Unit sphere (radius == 1), with a center in (0,0,0)
 type Sphere struct {
 	id        string
 	origin    Tuple
 	transform Matrix
+	material  Material
 }
 
-func newSphere(id string) Sphere {
-	return Sphere{id, newPoint(0, 0, 0), *newIdentityMatrix(4)}
+func newSphere(id string, material Material) Sphere {
+	return Sphere{
+		id:        id,
+		origin:    newPoint(0, 0, 0),
+		transform: *newIdentityMatrix(4),
+		material:  material,
+	}
+}
+
+func newDefaultSphere() Sphere {
+	return Sphere{
+		id:        "sphere_id",
+		origin:    newPoint(0, 0, 0),
+		transform: *newIdentityMatrix(4),
+		material:  newDefaultMaterial(),
+	}
 }
 
 func (s *Sphere) Equal(s2 *Sphere) bool {
@@ -80,6 +96,21 @@ func (s *Sphere) Transform() Matrix {
 
 func (s *Sphere) SetTransform(m *Matrix) {
 	s.transform = *m
+}
+
+func (s *Sphere) NormalAt(worldPoint Tuple) Tuple {
+	sphereCenter := newPoint(0, 0, 0)
+
+	objectPoint := s.transform.Inverse().MulTuple(worldPoint)
+	objectNormal := objectPoint.Sub(sphereCenter)
+	// Don't understand why transpose here added
+	worldNormal := s.transform.Inverse().Transpose().MulTuple(objectNormal)
+	worldNormal.w = 0
+
+	if !worldNormal.IsVector() {
+		panic("Normal vector must be a vector!")
+	}
+	return worldNormal.Normalize()
 }
 
 type Intersection struct {
@@ -102,4 +133,66 @@ func Hit(intersections []Intersection) (Intersection, bool) {
 
 	dummy := newIntersection(0, nil)
 	return dummy, false
+}
+
+type PointLight struct {
+	position  Tuple
+	intensity Color
+}
+
+func newPointLight(position Tuple, intensity Color) PointLight {
+	return PointLight{position: position, intensity: intensity}
+}
+
+type Material struct {
+	color     Color
+	ambient   float64
+	diffuse   float64
+	specular  float64
+	shininess float64
+}
+
+func newMaterial(color Color, ambient, diffuse, specular, shininess float64) Material {
+	if ambient < 0 || diffuse < 0 || specular < 0 || shininess < 0 {
+		panic("All Material's attribues must be nonnegative!")
+	}
+
+	return Material{color, ambient, diffuse, specular, shininess}
+}
+
+func newDefaultMaterial() Material {
+	return Material{WHITE, 0.1, 0.9, 0.9, 200.}
+}
+
+func CalcLighting(material Material, light PointLight, position, eyeV, normalV Tuple) Color {
+	if !position.IsPoint() {
+		panic("Position must be a point!")
+	}
+
+	if !eyeV.IsVector() || !normalV.IsVector() {
+		panic("Eye and Normal must be vectors!")
+	}
+
+	effectiveColor := material.color.MultHadamar(light.intensity)
+	ligthV := light.position.Sub(position).Normalize()
+	ambient := effectiveColor.MultScalar(material.ambient)
+
+	// negative dot product means the light is on the other side of the surface
+	// and should not contribute to the final lighting
+	lightDotNormal := ligthV.Dot(normalV)
+	diffuse, specular := BLACK, BLACK
+	if lightDotNormal >= 0 {
+		diffuse = effectiveColor.MultScalar(material.diffuse).MultScalar(lightDotNormal)
+
+		reflectV := ligthV.Mul(-1).ReflectAround(normalV)
+		// the same for reflected light. If negative -> reflected light doesn't contribute
+		// final intensity (specular == Black)
+		reflectDotEye := reflectV.Dot(eyeV)
+		if reflectDotEye > 0 {
+			factor := math.Pow(reflectDotEye, material.shininess)
+			specular = light.intensity.MultScalar(material.specular).MultScalar(factor)
+		}
+	}
+
+	return ambient.Add(diffuse).Add(specular)
 }

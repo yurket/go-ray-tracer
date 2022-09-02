@@ -93,6 +93,10 @@ func (t Tuple) Normalize() Tuple {
 	return Tuple{t.x / m, t.y / m, t.z / m, t.w / m}
 }
 
+// Dot product tells "how much co-directed" 2 vectors.
+// 0 to +1: pointing "same-ish" directions
+// 0: perpendicular to each other
+// -1 to 0: pointing "opposit-ish" directions
 func (a Tuple) Dot(b Tuple) float64 {
 	if !a.IsVector() || !b.IsVector() {
 		panic("Dot product isn't applicable to non-Vectors!")
@@ -110,13 +114,28 @@ func (a Tuple) Cross(b Tuple) Tuple {
 }
 
 // returns a so called column-vector
-func (a Tuple) ToMatrix() *Matrix {
+func (t Tuple) ToMatrix() *Matrix {
 	m := newMatrix([][]float64{
-		{a.x},
-		{a.y},
-		{a.z},
-		{a.w},
+		{t.x},
+		{t.y},
+		{t.z},
+		{t.w},
 	})
 
 	return m
+}
+
+func (t Tuple) ReflectAround(normal Tuple) Tuple {
+	if !t.IsVector() {
+		panic("Point can not be reflected!")
+	}
+
+	if !normal.IsVector() {
+		panic("Normal must be a vector!")
+	}
+
+	// It won't work when a vector perpendicular to a normal,
+	// but let's stick to the book's implementation
+	negTerm := normal.Mul(2).Mul(t.Dot(normal))
+	return t.Sub(negTerm)
 }

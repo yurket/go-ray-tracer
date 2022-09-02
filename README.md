@@ -13,6 +13,7 @@ Exapmles of the renders:
 
 <div align="center">
 
-<img src="./gallery/chapter05_sphere_projection02.png" width="500"/> <img src="./gallery/chapter05_sphere_projection05.png" width="500"/>
+<img src="./gallery/chapter06_lighted_sphere.png"/>
+
 
 </div>
