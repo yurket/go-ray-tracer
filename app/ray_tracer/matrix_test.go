@@ -19,6 +19,11 @@ func TestCanCreateAndAccess4x4MatrixElements(t *testing.T) {
 	require.EqualValues(t, 14.5, m.At(3, 1))
 }
 
+func TestCreatingMatrixWithZeroRowsOrColumnsFails(t *testing.T) {
+	require.Panics(t, func() { newMatrix([][]float64{}) })
+	require.Panics(t, func() { newMatrix([][]float64{{}, {}, {}}) })
+}
+
 func TestCreatingMatricesWithArbitrarySizes(t *testing.T) {
 	m1x3 := newMatrix([][]float64{{1, 1, 1}})
 	rows, cols := m1x3.Shape()
@@ -106,6 +111,20 @@ func TestComparingMatricesWithDifferentValues(t *testing.T) {
 	m2 := newMatrix([][]float64{{1, 2, 3}, {0, 5, 6}})
 
 	require.False(t, m1.Equal(m2))
+}
+
+func TestMatrixMultiplicationWithNonMatchingDimensionsFails(t *testing.T) {
+	a := newMatrix([][]float64{
+		{1, 2},
+		{5, 6},
+	})
+	b := newMatrix([][]float64{
+		{-2, 1},
+		{1, 2},
+		{1, 2},
+	})
+
+	require.Panics(t, func() { a.MulMat(b) })
 }
 
 func TestMatrixMultiplication(t *testing.T) {
@@ -249,6 +268,27 @@ func TestComputingDeterminantOf2x2Matrix(t *testing.T) {
 	require.EqualValues(t, 17, m.Determinant())
 }
 
+func TestTryingToComputeDeterminantOfNonSquareMatrixFails(t *testing.T) {
+	m := newMatrix([][]float64{
+		{1, 5, 6},
+		{-3, 2, 6},
+	})
+
+	require.Panics(t, func() { m.Determinant() })
+}
+
+func TestTryingToComputeDeterminantOfMatrixBiggerThan4x4Fails(t *testing.T) {
+	m := newMatrix([][]float64{
+		{5, 5, 5, 5, 5},
+		{5, 5, 5, 5, 5},
+		{5, 5, 5, 5, 5},
+		{5, 5, 5, 5, 5},
+		{5, 5, 5, 5, 5},
+	})
+
+	require.Panics(t, func() { m.Determinant() })
+}
+
 func TestGettingSubmatrixOf3x3Matrix(t *testing.T) {
 	m := newMatrix([][]float64{
 		{1, 5, 0},
@@ -352,6 +392,16 @@ func TestIsMatrixInvertible(t *testing.T) {
 		{-2, 1, -1, -1.5},
 	})
 	require.False(t, m2.IsInvertible())
+}
+
+func TestTryingToInvertNonInversibleMatrixFails(t *testing.T) {
+	// linearly-dependent rows
+	m := newMatrix([][]float64{
+		{1, 2},
+		{2, 4},
+	})
+
+	require.Panics(t, func() { m.Inverse() })
 }
 
 func TestMatrixInverse(t *testing.T) {
