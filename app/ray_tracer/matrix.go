@@ -225,7 +225,7 @@ func (a *Matrix) Inverse() *Matrix {
 	return cofactors.Div(a.Determinant())
 }
 
-func (a *Matrix) ToString() string {
+func (a *Matrix) String() string {
 	res := ""
 	for i := 0; i < a.rows; i++ {
 		res += "|"
