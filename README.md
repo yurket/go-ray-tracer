@@ -15,5 +15,4 @@ Exapmles of the renders:
 
 <img src="./gallery/chapter06_lighted_sphere.png"/>
 
-
 </div>
