@@ -17,7 +17,7 @@ type Canvas struct {
 const MAX_COLORS = 255
 
 // Adressing is NOT like in the "usual" matrices with rows and columns
-func newCanvas(width int, height int) Canvas {
+func NewCanvas(width int, height int) Canvas {
 	canvas := Canvas{width: width, height: height}
 	canvas.pixels = make([][]Color, width)
 	for i := 0; i < width; i++ {

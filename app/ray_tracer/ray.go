@@ -12,7 +12,7 @@ type Ray struct {
 	direction Tuple
 }
 
-func newRay(origin, direction Tuple) Ray {
+func NewRay(origin, direction Tuple) Ray {
 	if !origin.IsPoint() {
 		panic("Origin must be a point!")
 	}
@@ -34,7 +34,7 @@ func (r *Ray) Intersect(s *Sphere) []Intersection {
 	t := s.Transform()
 	transformedRay := r.ApplyTransform(t.Inverse())
 
-	sphereOrigin := newPoint(0, 0, 0)
+	sphereOrigin := NewPoint(0, 0, 0)
 	sphereToRay := transformedRay.origin.Sub(sphereOrigin)
 	a := transformedRay.direction.Dot(transformedRay.direction)
 	b := 2 * transformedRay.direction.Dot(sphereToRay)
@@ -49,13 +49,13 @@ func (r *Ray) Intersect(s *Sphere) []Intersection {
 	t2 := (-b + math.Sqrt(discriminant)) / (2 * a)
 
 	return []Intersection{
-		newIntersection(math.Min(t1, t2), s),
-		newIntersection(math.Max(t1, t2), s),
+		NewIntersection(math.Min(t1, t2), s),
+		NewIntersection(math.Max(t1, t2), s),
 	}
 }
 
 func (r *Ray) ApplyTransform(m *Matrix) Ray {
-	return newRay(m.MulTuple(r.origin), m.MulTuple(r.direction))
+	return NewRay(m.MulTuple(r.origin), m.MulTuple(r.direction))
 }
 
 // Unit sphere (radius == 1), with a center in (0,0,0)
@@ -66,21 +66,21 @@ type Sphere struct {
 	material  Material
 }
 
-func newSphere(id string, material Material) Sphere {
+func NewSphere(id string, material Material) Sphere {
 	return Sphere{
 		id:        id,
-		origin:    newPoint(0, 0, 0),
-		transform: *newIdentityMatrix(4),
+		origin:    NewPoint(0, 0, 0),
+		transform: *NewIdentityMatrix(4),
 		material:  material,
 	}
 }
 
-func newDefaultSphere() Sphere {
+func NewDefaultSphere() Sphere {
 	return Sphere{
 		id:        "sphere_id",
-		origin:    newPoint(0, 0, 0),
-		transform: *newIdentityMatrix(4),
-		material:  newDefaultMaterial(),
+		origin:    NewPoint(0, 0, 0),
+		transform: *NewIdentityMatrix(4),
+		material:  NewDefaultMaterial(),
 	}
 }
 
@@ -99,7 +99,7 @@ func (s *Sphere) SetTransform(m *Matrix) {
 }
 
 func (s *Sphere) NormalAt(worldPoint Tuple) Tuple {
-	sphereCenter := newPoint(0, 0, 0)
+	sphereCenter := NewPoint(0, 0, 0)
 
 	objectPoint := s.transform.Inverse().MulTuple(worldPoint)
 	objectNormal := objectPoint.Sub(sphereCenter)
@@ -118,7 +118,7 @@ type Intersection struct {
 	object *Sphere
 }
 
-func newIntersection(t float64, object *Sphere) Intersection {
+func NewIntersection(t float64, object *Sphere) Intersection {
 	return Intersection{t, object}
 }
 
@@ -131,7 +131,7 @@ func Hit(intersections []Intersection) (Intersection, bool) {
 		}
 	}
 
-	dummy := newIntersection(0, nil)
+	dummy := NewIntersection(0, nil)
 	return dummy, false
 }
 
@@ -140,7 +140,7 @@ type PointLight struct {
 	intensity Color
 }
 
-func newPointLight(position Tuple, intensity Color) PointLight {
+func NewPointLight(position Tuple, intensity Color) PointLight {
 	return PointLight{position: position, intensity: intensity}
 }
 
@@ -152,7 +152,7 @@ type Material struct {
 	shininess float64
 }
 
-func newMaterial(color Color, ambient, diffuse, specular, shininess float64) Material {
+func NewMaterial(color Color, ambient, diffuse, specular, shininess float64) Material {
 	if ambient < 0 || diffuse < 0 || specular < 0 || shininess < 0 {
 		panic("All Material's attribues must be nonnegative!")
 	}
@@ -160,7 +160,7 @@ func newMaterial(color Color, ambient, diffuse, specular, shininess float64) Mat
 	return Material{color, ambient, diffuse, specular, shininess}
 }
 
-func newDefaultMaterial() Material {
+func NewDefaultMaterial() Material {
 	return Material{WHITE, 0.1, 0.9, 0.9, 200.}
 }
 

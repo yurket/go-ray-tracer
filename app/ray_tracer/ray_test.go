@@ -10,29 +10,29 @@ import (
 var COS45 = math.Sqrt(2) / 2.0
 
 func TestCreatingAndQueringRays(t *testing.T) {
-	origin := newPoint(1, 2, 3)
-	direction := newVector(4, 5, 6)
+	origin := NewPoint(1, 2, 3)
+	direction := NewVector(4, 5, 6)
 
-	r := newRay(origin, direction)
+	r := NewRay(origin, direction)
 
 	require.True(t, r.origin.Equal(origin))
 	require.True(t, r.direction.Equal(direction))
 }
 
 func TestComputingRayPositionAfterElapsedTimeT(t *testing.T) {
-	origin, direction := newPoint(2, 3, 4), newVector(1, 0, 0)
-	r := newRay(origin, direction)
+	origin, direction := NewPoint(2, 3, 4), NewVector(1, 0, 0)
+	r := NewRay(origin, direction)
 
-	require.True(t, r.CalcPosition(0).Equal(newPoint(2, 3, 4)))
-	require.True(t, r.CalcPosition(1).Equal(newPoint(3, 3, 4)))
-	require.True(t, r.CalcPosition(-1).Equal(newPoint(1, 3, 4)))
-	require.True(t, r.CalcPosition(2.5).Equal(newPoint(4.5, 3, 4)))
+	require.True(t, r.CalcPosition(0).Equal(NewPoint(2, 3, 4)))
+	require.True(t, r.CalcPosition(1).Equal(NewPoint(3, 3, 4)))
+	require.True(t, r.CalcPosition(-1).Equal(NewPoint(1, 3, 4)))
+	require.True(t, r.CalcPosition(2.5).Equal(NewPoint(4.5, 3, 4)))
 }
 
 func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
-	origin, direction := newPoint(0, 0, -5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
+	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
 
 	xs := r.Intersect(&s)
 
@@ -42,9 +42,9 @@ func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
 }
 
 func TestRayIntersectsSphereAtATangent(t *testing.T) {
-	origin, direction := newPoint(0, 1, -5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
+	origin, direction := NewPoint(0, 1, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
 
 	xs := r.Intersect(&s)
 
@@ -54,9 +54,9 @@ func TestRayIntersectsSphereAtATangent(t *testing.T) {
 }
 
 func TestRayMissesSphere(t *testing.T) {
-	origin, direction := newPoint(0, 2, -5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
+	origin, direction := NewPoint(0, 2, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
 
 	xs := r.Intersect(&s)
 
@@ -65,9 +65,9 @@ func TestRayMissesSphere(t *testing.T) {
 
 // Ray extends *behind* the starting point, so we'll have 2 intersections
 func TestRayOriginatesInsideSphere(t *testing.T) {
-	origin, direction := newPoint(0, 0, 0), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
+	origin, direction := NewPoint(0, 0, 0), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
 
 	xs := r.Intersect(&s)
 
@@ -77,9 +77,9 @@ func TestRayOriginatesInsideSphere(t *testing.T) {
 }
 
 func TestSphereCompletelyBehindRay(t *testing.T) {
-	origin, direction := newPoint(0, 0, 5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
+	origin, direction := NewPoint(0, 0, 5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
 
 	xs := r.Intersect(&s)
 
@@ -89,18 +89,18 @@ func TestSphereCompletelyBehindRay(t *testing.T) {
 }
 
 func TestAndIntersectionEncapsulatesTAndObject(t *testing.T) {
-	s := newDefaultSphere()
+	s := NewDefaultSphere()
 
-	i := newIntersection(3.5, &s)
+	i := NewIntersection(3.5, &s)
 
 	require.EqualValues(t, 3.5, i.time)
 	require.EqualValues(t, s, *i.object)
 }
 
 func TestIntersectSetsTheObjectOnTheIntersection(t *testing.T) {
-	origin, direction := newPoint(0, 0, -5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
+	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
 
 	xs := r.Intersect(&s)
 
@@ -110,9 +110,9 @@ func TestIntersectSetsTheObjectOnTheIntersection(t *testing.T) {
 }
 
 func TestHitWithAllIntersectionsWithPositiveT(t *testing.T) {
-	s := newDefaultSphere()
-	i1 := newIntersection(1, &s)
-	i2 := newIntersection(2, &s)
+	s := NewDefaultSphere()
+	i1 := NewIntersection(1, &s)
+	i2 := NewIntersection(2, &s)
 	xs := []Intersection{i1, i2}
 
 	i, ok := Hit(xs)
@@ -122,9 +122,9 @@ func TestHitWithAllIntersectionsWithPositiveT(t *testing.T) {
 }
 
 func TestHitWithSomeIntersectionsWithNegativeT(t *testing.T) {
-	s := newDefaultSphere()
-	i1 := newIntersection(-1, &s)
-	i2 := newIntersection(1, &s)
+	s := NewDefaultSphere()
+	i1 := NewIntersection(-1, &s)
+	i2 := NewIntersection(1, &s)
 	xs := []Intersection{i1, i2}
 
 	i, ok := Hit(xs)
@@ -134,9 +134,9 @@ func TestHitWithSomeIntersectionsWithNegativeT(t *testing.T) {
 }
 
 func TestNoHitWhenAllIntersectionsHaveNegativeT(t *testing.T) {
-	s := newDefaultSphere()
-	i1 := newIntersection(-1, &s)
-	i2 := newIntersection(-2, &s)
+	s := NewDefaultSphere()
+	i1 := NewIntersection(-1, &s)
+	i2 := NewIntersection(-2, &s)
 	xs := []Intersection{i1, i2}
 
 	_, ok := Hit(xs)
@@ -145,11 +145,11 @@ func TestNoHitWhenAllIntersectionsHaveNegativeT(t *testing.T) {
 }
 
 func TestHitIsAlwaysTheLowestNonnegativeIntersection(t *testing.T) {
-	s := newDefaultSphere()
-	i1 := newIntersection(5, &s)
-	i2 := newIntersection(6, &s)
-	i3 := newIntersection(-3, &s)
-	i4 := newIntersection(2, &s)
+	s := NewDefaultSphere()
+	i1 := NewIntersection(5, &s)
+	i2 := NewIntersection(6, &s)
+	i3 := NewIntersection(-3, &s)
+	i4 := NewIntersection(2, &s)
 	xs := []Intersection{i1, i2, i3, i4}
 
 	i, ok := Hit(xs)
@@ -159,38 +159,38 @@ func TestHitIsAlwaysTheLowestNonnegativeIntersection(t *testing.T) {
 }
 
 func TestTranslatingRay(t *testing.T) {
-	origin, direction := newPoint(1, 2, 3), newVector(0, 1, 0)
-	r := newRay(origin, direction)
-	m := newTranslationMatrix(3, 4, 5)
+	origin, direction := NewPoint(1, 2, 3), NewVector(0, 1, 0)
+	r := NewRay(origin, direction)
+	m := NewTranslationMatrix(3, 4, 5)
 
 	r2 := r.ApplyTransform(m)
 
-	expectOrigin, expectDirection := newPoint(4, 6, 8), newVector(0, 1, 0)
+	expectOrigin, expectDirection := NewPoint(4, 6, 8), NewVector(0, 1, 0)
 	require.True(t, r2.origin.Equal(expectOrigin))
 	require.True(t, r2.direction.Equal(expectDirection))
 }
 
 func TestScalingRay(t *testing.T) {
-	origin, direction := newPoint(1, 2, 3), newVector(0, 1, 0)
-	r := newRay(origin, direction)
-	m := newScalingMatrix(2, 3, 4)
+	origin, direction := NewPoint(1, 2, 3), NewVector(0, 1, 0)
+	r := NewRay(origin, direction)
+	m := NewScalingMatrix(2, 3, 4)
 
 	r2 := r.ApplyTransform(m)
 
-	expectOrigin, expectDirection := newPoint(2, 6, 12), newVector(0, 3, 0)
+	expectOrigin, expectDirection := NewPoint(2, 6, 12), NewVector(0, 3, 0)
 	require.True(t, r2.origin.Equal(expectOrigin))
 	require.True(t, r2.direction.Equal(expectDirection))
 }
 
 func TestSpheresDefaultTransofrmationIsIdentity(t *testing.T) {
-	s := newDefaultSphere()
+	s := NewDefaultSphere()
 
-	require.True(t, s.transform.Equal(newIdentityMatrix(4)))
+	require.True(t, s.transform.Equal(NewIdentityMatrix(4)))
 }
 
 func TestSettingSphereTransformation(t *testing.T) {
-	s := newDefaultSphere()
-	translation := newTranslationMatrix(2, 3, 4)
+	s := NewDefaultSphere()
+	translation := NewTranslationMatrix(2, 3, 4)
 
 	s.SetTransform(translation)
 
@@ -199,10 +199,10 @@ func TestSettingSphereTransformation(t *testing.T) {
 }
 
 func TestIntersectingScaledSphereWithRay(t *testing.T) {
-	origin, direction := newPoint(0, 0, -5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
-	s.SetTransform(newScalingMatrix(2, 2, 2))
+	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+	s.SetTransform(NewScalingMatrix(2, 2, 2))
 
 	xs := r.Intersect(&s)
 
@@ -212,10 +212,10 @@ func TestIntersectingScaledSphereWithRay(t *testing.T) {
 }
 
 func TestIntersectingTranslatedSphereWithRay(t *testing.T) {
-	origin, direction := newPoint(0, 0, -5), newVector(0, 0, 1)
-	r := newRay(origin, direction)
-	s := newDefaultSphere()
-	s.SetTransform(newTranslationMatrix(5, 0, 0))
+	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+	s.SetTransform(NewTranslationMatrix(5, 0, 0))
 
 	xs := r.Intersect(&s)
 
@@ -223,79 +223,79 @@ func TestIntersectingTranslatedSphereWithRay(t *testing.T) {
 }
 
 func TestNormalOnSphereX(t *testing.T) {
-	s := newDefaultSphere()
-	n := s.NormalAt(newPoint(1, 0, 0))
+	s := NewDefaultSphere()
+	n := s.NormalAt(NewPoint(1, 0, 0))
 
-	expect := newVector(1, 0, 0)
+	expect := NewVector(1, 0, 0)
 	require.True(t, n.Equal(expect))
 }
 
 func TestNormalOnSphereY(t *testing.T) {
-	s := newDefaultSphere()
-	n := s.NormalAt(newPoint(0, 1, 0))
+	s := NewDefaultSphere()
+	n := s.NormalAt(NewPoint(0, 1, 0))
 
-	expect := newVector(0, 1, 0)
+	expect := NewVector(0, 1, 0)
 	require.True(t, n.Equal(expect))
 
 }
 func TestNormalOnSphereZ(t *testing.T) {
-	s := newDefaultSphere()
-	n := s.NormalAt(newPoint(0, 0, 1))
+	s := NewDefaultSphere()
+	n := s.NormalAt(NewPoint(0, 0, 1))
 
-	expect := newVector(0, 0, 1)
+	expect := NewVector(0, 0, 1)
 	require.True(t, n.Equal(expect))
 }
 
 func TestNormalOnSphereNonAxial(t *testing.T) {
-	s := newDefaultSphere()
+	s := NewDefaultSphere()
 	v := math.Sqrt(3) / 3.0
-	n := s.NormalAt(newPoint(v, v, v))
+	n := s.NormalAt(NewPoint(v, v, v))
 
-	expect := newVector(v, v, v)
+	expect := NewVector(v, v, v)
 	require.True(t, n.Equal(expect))
 }
 
 func TestNormalVectorsAreAlwaysNormalized(t *testing.T) {
-	s := newDefaultSphere()
+	s := NewDefaultSphere()
 	v := math.Sqrt(3) / 3.0
-	n := s.NormalAt(newPoint(v, v, v))
+	n := s.NormalAt(NewPoint(v, v, v))
 
 	expect := n.Normalize()
 	require.True(t, n.Equal(expect))
 }
 
 func TestComputingNormalOnTranslatedSphere(t *testing.T) {
-	s := newDefaultSphere()
-	s.SetTransform(newTranslationMatrix(0, 1, 0))
-	n := s.NormalAt(newPoint(0, 1.70711, -0.70711))
+	s := NewDefaultSphere()
+	s.SetTransform(NewTranslationMatrix(0, 1, 0))
+	n := s.NormalAt(NewPoint(0, 1.70711, -0.70711))
 
-	expect := newVector(0, 0.70711, -0.70711)
+	expect := NewVector(0, 0.70711, -0.70711)
 	require.True(t, n.Equal(expect))
 }
 
 func TestComputingNormalOnTransformedSphere(t *testing.T) {
-	s := newDefaultSphere()
-	transform := newIdentityMatrix(4).RotateZ(math.Pi/5).Scale(1, 0.5, 1)
+	s := NewDefaultSphere()
+	transform := NewIdentityMatrix(4).RotateZ(math.Pi/5).Scale(1, 0.5, 1)
 	s.SetTransform(transform)
-	n := s.NormalAt(newPoint(0, COS45, -COS45))
+	n := s.NormalAt(NewPoint(0, COS45, -COS45))
 
-	expect := newVector(0, 0.97014, -0.24254)
+	expect := NewVector(0, 0.97014, -0.24254)
 	require.True(t, n.Equal(expect))
 
 }
 
 func TestCreatingPointLight(t *testing.T) {
-	pos := newPoint(0, 0, 0)
+	pos := NewPoint(0, 0, 0)
 	intensity := WHITE
 
-	pl := newPointLight(pos, intensity)
+	pl := NewPointLight(pos, intensity)
 
 	require.True(t, intensity.Equal(pl.intensity))
 	require.True(t, pos.Equal(pl.position))
 }
 
 func TestCreatingDefaultMaterial(t *testing.T) {
-	m := newDefaultMaterial()
+	m := NewDefaultMaterial()
 
 	require.True(t, m.color.Equal(WHITE))
 	require.EqualValues(t, 0.1, m.ambient)
@@ -305,80 +305,80 @@ func TestCreatingDefaultMaterial(t *testing.T) {
 }
 
 func TestMaterialArgumentsMustBePositive(t *testing.T) {
-	require.Panics(t, func() { newMaterial(WHITE, -2, 0, 0, 0) })
-	require.Panics(t, func() { newMaterial(WHITE, 0, -2, 0, 0) })
-	require.Panics(t, func() { newMaterial(WHITE, 0, 0, -2, 0) })
-	require.Panics(t, func() { newMaterial(WHITE, 0, 0, 0, -2) })
+	require.Panics(t, func() { NewMaterial(WHITE, -2, 0, 0, 0) })
+	require.Panics(t, func() { NewMaterial(WHITE, 0, -2, 0, 0) })
+	require.Panics(t, func() { NewMaterial(WHITE, 0, 0, -2, 0) })
+	require.Panics(t, func() { NewMaterial(WHITE, 0, 0, 0, -2) })
 }
 
 func TestCreatingSphereWithMaterial(t *testing.T) {
-	m := newMaterial(RED, 3, 4, 5, 6)
+	m := NewMaterial(RED, 3, 4, 5, 6)
 
-	s := newSphere("sphere_id", m)
+	s := NewSphere("sphere_id", m)
 
 	require.Equal(t, m, s.material)
 }
 
 func TestLightingWithEyeBetweenLightAndSurface(t *testing.T) {
-	m, pos := newMaterial(WHITE, 0.1, 0.9, 0.9, 200.), newPoint(0, 0, 0)
-	eye := newVector(0, 0, -1)
-	normal := newVector(0, 0, -1)
-	light := newPointLight(newPoint(0, 0, -10), WHITE)
+	m, pos := NewMaterial(WHITE, 0.1, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
+	eye := NewVector(0, 0, -1)
+	normal := NewVector(0, 0, -1)
+	light := NewPointLight(NewPoint(0, 0, -10), WHITE)
 
 	i := 0.1 + 0.9 + 0.9
-	expect := newColor(i, i, i)
+	expect := NewColor(i, i, i)
 	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestLightingWithEyeOffset45DegreesBetweenLightAndSurface(t *testing.T) {
-	m, pos := newMaterial(WHITE, 0.1, 0.9, 0.9, 200.), newPoint(0, 0, 0)
-	eye := newVector(0, COS45, COS45)
-	normal := newVector(0, 0, -1)
-	light := newPointLight(newPoint(0, 0, -10), WHITE)
+	m, pos := NewMaterial(WHITE, 0.1, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
+	eye := NewVector(0, COS45, COS45)
+	normal := NewVector(0, 0, -1)
+	light := NewPointLight(NewPoint(0, 0, -10), WHITE)
 
 	i := 0.1 + 0.9 + 0
-	expect := newColor(i, i, i)
+	expect := NewColor(i, i, i)
 	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestLightingWithEyeOppositeSurfaceAndLightOffset45Degrees(t *testing.T) {
-	m, pos := newMaterial(WHITE, 0.1, 0.9, 0.9, 200.), newPoint(0, 0, 0)
-	eye := newVector(0, 0, -1)
-	normal := newVector(0, 0, -1)
-	light := newPointLight(newPoint(0, 10, -10), WHITE)
+	m, pos := NewMaterial(WHITE, 0.1, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
+	eye := NewVector(0, 0, -1)
+	normal := NewVector(0, 0, -1)
+	light := NewPointLight(NewPoint(0, 10, -10), WHITE)
 
 	i := 0.1 + 0.9*COS45 + 0
-	expect := newColor(i, i, i)
+	expect := NewColor(i, i, i)
 	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestLightingWithEyeInThePathOfReflectionVector(t *testing.T) {
-	m, pos := newMaterial(WHITE, 0.1, 0.9, 0.9, 200.), newPoint(0, 0, 0)
-	eye := newVector(0, -COS45, -COS45)
-	normal := newVector(0, 0, -1)
-	light := newPointLight(newPoint(0, 10, -10), WHITE)
+	m, pos := NewMaterial(WHITE, 0.1, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
+	eye := NewVector(0, -COS45, -COS45)
+	normal := NewVector(0, 0, -1)
+	light := NewPointLight(NewPoint(0, 10, -10), WHITE)
 
 	i := 0.1 + 0.9*COS45 + 0.9
-	expect := newColor(i, i, i)
+	expect := NewColor(i, i, i)
 	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestLightingWithLightBehindTheSurface(t *testing.T) {
-	m, pos := newMaterial(WHITE, 0.1, 0.9, 0.9, 200.), newPoint(0, 0, 0)
-	eye := newVector(0, 0, -1)
-	normal := newVector(0, 0, -1)
-	light := newPointLight(newPoint(0, 0, 10), WHITE)
+	m, pos := NewMaterial(WHITE, 0.1, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
+	eye := NewVector(0, 0, -1)
+	normal := NewVector(0, 0, -1)
+	light := NewPointLight(NewPoint(0, 0, 10), WHITE)
 
 	i := 0.1 + 0 + 0
-	expect := newColor(i, i, i)
+	expect := NewColor(i, i, i)
 	res := CalcLighting(m, light, pos, eye, normal)
 
 	require.True(t, res.Equal(expect))

@@ -21,8 +21,8 @@ func tick(env environment, proj projectile) projectile {
 }
 
 func Chapter01Projectile() {
-	env := environment{gravity: newVector(0, -0.1, 0), wind: newVector(-0.01, 0, 0)}
-	proj := projectile{position: newPoint(0, 1, 0), velocity: newVector(1, 1, 0).Normalize()}
+	env := environment{gravity: NewVector(0, -0.1, 0), wind: NewVector(-0.01, 0, 0)}
+	proj := projectile{position: NewPoint(0, 1, 0), velocity: NewVector(1, 1, 0).Normalize()}
 	i := 0
 	for ; proj.position.y >= 0; i++ {
 		fmt.Printf("iter %d, pos: %3.3f, vel: %3.2f\n", i, proj.position, proj.velocity)
