@@ -28,7 +28,7 @@ func Chapter06LightAndShading(filename string) {
 			}
 
 			ray := NewRay(eyeOrigin, direction)
-			intersections := ray.Intersect(&sphere)
+			intersections := sphere.IntersectWith(&ray)
 			hit, ok := Hit(intersections)
 			if !ok {
 				continue

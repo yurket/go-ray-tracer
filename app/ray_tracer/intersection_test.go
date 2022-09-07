@@ -20,7 +20,7 @@ func TestIntersectSetsTheObjectOnTheIntersection(t *testing.T) {
 	r := NewRay(origin, direction)
 	s := NewDefaultSphere()
 
-	xs := r.Intersect(&s)
+	xs := s.IntersectWith(&r)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, s, *xs[0].object)

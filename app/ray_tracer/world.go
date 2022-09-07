@@ -69,7 +69,7 @@ func (w World) IntersectWith(r *Ray) []Intersection {
 	for _, obj := range w {
 		switch obj := obj.(type) {
 		case *Sphere:
-			xs := r.Intersect(obj)
+			xs := obj.IntersectWith(r)
 			allIntersections = append(allIntersections, xs...)
 		case *PointLight:
 			continue

@@ -27,7 +27,7 @@ func Chapter05(filename string) {
 			}
 
 			ray := NewRay(eyeOrigin, direction)
-			intersections := ray.Intersect(&s)
+			intersections := s.IntersectWith(&ray)
 			_, ok := Hit(intersections)
 			if !ok {
 				continue
@@ -66,7 +66,7 @@ func Chapter05BookSolution(filename string) {
 			targetPoint := NewPoint(worldX, worldY, wallZ)
 			direction := targetPoint.Sub(eyeOrigin).Normalize()
 			ray := NewRay(eyeOrigin, direction)
-			xs := ray.Intersect(&s)
+			xs := s.IntersectWith(&ray)
 			if _, ok := Hit(xs); !ok {
 				continue
 			}

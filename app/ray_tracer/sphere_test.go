@@ -37,7 +37,7 @@ func TestIntersectingScaledSphereWithRay(t *testing.T) {
 	s := NewDefaultSphere()
 	s.SetTransform(NewScalingMatrix(2, 2, 2))
 
-	xs := r.Intersect(&s)
+	xs := s.IntersectWith(&r)
 
 	require.EqualValues(t, 2, len(xs))
 	require.EqualValues(t, 3, xs[0].time)
@@ -50,9 +50,68 @@ func TestIntersectingTranslatedSphereWithRay(t *testing.T) {
 	s := NewDefaultSphere()
 	s.SetTransform(NewTranslationMatrix(5, 0, 0))
 
-	xs := r.Intersect(&s)
+	xs := s.IntersectWith(&r)
 
 	require.EqualValues(t, 0, len(xs))
+}
+
+func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
+	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+
+	xs := s.IntersectWith(&r)
+
+	require.EqualValues(t, 2, len(xs))
+	require.EqualValues(t, 4, xs[0].time)
+	require.EqualValues(t, 6, xs[1].time)
+}
+
+func TestRayIntersectsSphereAtATangent(t *testing.T) {
+	origin, direction := NewPoint(0, 1, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+
+	xs := s.IntersectWith(&r)
+
+	require.EqualValues(t, 2, len(xs))
+	require.EqualValues(t, 5.0, xs[0].time)
+	require.EqualValues(t, xs[0], xs[1])
+}
+
+func TestRayMissesSphere(t *testing.T) {
+	origin, direction := NewPoint(0, 2, -5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+
+	xs := s.IntersectWith(&r)
+
+	require.EqualValues(t, 0, len(xs))
+}
+
+// Ray extends *behind* the starting point, so we'll have 2 intersections
+func TestRayOriginatesInsideSphere(t *testing.T) {
+	origin, direction := NewPoint(0, 0, 0), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+
+	xs := s.IntersectWith(&r)
+
+	require.EqualValues(t, 2, len(xs))
+	require.EqualValues(t, -1.0, xs[0].time)
+	require.EqualValues(t, 1.0, xs[1].time)
+}
+
+func TestSphereCompletelyBehindRay(t *testing.T) {
+	origin, direction := NewPoint(0, 0, 5), NewVector(0, 0, 1)
+	r := NewRay(origin, direction)
+	s := NewDefaultSphere()
+
+	xs := s.IntersectWith(&r)
+
+	require.EqualValues(t, 2, len(xs))
+	require.EqualValues(t, -6.0, xs[0].time)
+	require.EqualValues(t, -4.0, xs[1].time)
 }
 
 func TestNormalOnSphereX(t *testing.T) {

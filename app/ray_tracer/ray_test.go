@@ -26,65 +26,6 @@ func TestComputingRayPositionAfterElapsedTimeT(t *testing.T) {
 	require.True(t, r.CalcPosition(2.5).Equal(NewPoint(4.5, 3, 4)))
 }
 
-func TestRayIntersectsSphereAtTwoPoints(t *testing.T) {
-	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
-	r := NewRay(origin, direction)
-	s := NewDefaultSphere()
-
-	xs := r.Intersect(&s)
-
-	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 4, xs[0].time)
-	require.EqualValues(t, 6, xs[1].time)
-}
-
-func TestRayIntersectsSphereAtATangent(t *testing.T) {
-	origin, direction := NewPoint(0, 1, -5), NewVector(0, 0, 1)
-	r := NewRay(origin, direction)
-	s := NewDefaultSphere()
-
-	xs := r.Intersect(&s)
-
-	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, 5.0, xs[0].time)
-	require.EqualValues(t, xs[0], xs[1])
-}
-
-func TestRayMissesSphere(t *testing.T) {
-	origin, direction := NewPoint(0, 2, -5), NewVector(0, 0, 1)
-	r := NewRay(origin, direction)
-	s := NewDefaultSphere()
-
-	xs := r.Intersect(&s)
-
-	require.EqualValues(t, 0, len(xs))
-}
-
-// Ray extends *behind* the starting point, so we'll have 2 intersections
-func TestRayOriginatesInsideSphere(t *testing.T) {
-	origin, direction := NewPoint(0, 0, 0), NewVector(0, 0, 1)
-	r := NewRay(origin, direction)
-	s := NewDefaultSphere()
-
-	xs := r.Intersect(&s)
-
-	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, -1.0, xs[0].time)
-	require.EqualValues(t, 1.0, xs[1].time)
-}
-
-func TestSphereCompletelyBehindRay(t *testing.T) {
-	origin, direction := NewPoint(0, 0, 5), NewVector(0, 0, 1)
-	r := NewRay(origin, direction)
-	s := NewDefaultSphere()
-
-	xs := r.Intersect(&s)
-
-	require.EqualValues(t, 2, len(xs))
-	require.EqualValues(t, -6.0, xs[0].time)
-	require.EqualValues(t, -4.0, xs[1].time)
-}
-
 func TestTranslatingRay(t *testing.T) {
 	origin, direction := NewPoint(1, 2, 3), NewVector(0, 1, 0)
 	r := NewRay(origin, direction)
