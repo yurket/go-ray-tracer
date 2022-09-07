@@ -83,3 +83,31 @@ func TestLightingWithLightBehindTheSurface(t *testing.T) {
 
 	require.True(t, res.Equal(expect))
 }
+
+func TestShadingAnIntersectionFromTheOutside(t *testing.T) {
+	w := NewDefaultWorld()
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s1 := w.Sphere("s1")
+	i := NewIntersection(4, s1)
+	comps := PrepareIntersectionComputations(i, r)
+
+	expect := NewColor(0.38066, 0.47583, 0.2855)
+	res := ShadeHit(w, &comps)
+
+	require.True(t, expect.Equal(res))
+}
+
+func TestShadingAnIntersectionFromTheInside(t *testing.T) {
+	w := NewDefaultWorld()
+	w.SetLight(NewPointLight(NewPoint(0, 0.25, 0), WHITE))
+	r := NewRay(NewPoint(0, 0, 0), NewVector(0, 0, 1))
+
+	s2 := w.Sphere("s2")
+	i := NewIntersection(0.5, s2)
+	comps := PrepareIntersectionComputations(i, r)
+
+	expect := NewColor(0.90498, 0.90498, 0.90498)
+	res := ShadeHit(w, &comps)
+
+	require.True(t, expect.Equal(res))
+}

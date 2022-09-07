@@ -1,6 +1,7 @@
 .vscode/
 app/app
 *.ppm
+*.sh
 
 
 # Binaries for programs and plugins

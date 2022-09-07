@@ -75,3 +75,41 @@ func TestHitIsAlwaysTheLowestNonnegativeIntersection(t *testing.T) {
 	require.True(t, ok)
 	require.EqualValues(t, i, i4)
 }
+
+func TestPrecomputingTheStateOfAnIntersection(t *testing.T) {
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s := NewDefaultSphere()
+	i := NewIntersection(4, &s)
+
+	comps := PrepareIntersectionComputations(i, r)
+
+	require.EqualValues(t, comps.intersectionTime, i.time)
+	require.EqualValues(t, comps.intersectionObject, i.object)
+	require.True(t, comps.intersectionPoint.Equal(NewPoint(0, 0, -1)))
+	require.True(t, comps.eyev.Equal(NewVector(0, 0, -1)))
+	require.True(t, comps.objectNormalv.Equal(NewVector(0, 0, -1)))
+}
+
+func TestTheHitWithOutsideIntersection(t *testing.T) {
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s := NewDefaultSphere()
+	i := NewIntersection(4, &s)
+
+	comps := PrepareIntersectionComputations(i, r)
+
+	require.False(t, comps.insideHit)
+}
+
+func TestTheHitWithInsideIntersection(t *testing.T) {
+	r := NewRay(NewPoint(0, 0, 0), NewVector(0, 0, 1))
+	s := NewDefaultSphere()
+	i := NewIntersection(1, &s)
+
+	comps := PrepareIntersectionComputations(i, r)
+
+	require.True(t, comps.intersectionPoint.Equal(NewPoint(0, 0, 1)))
+	require.True(t, comps.eyev.Equal(NewVector(0, 0, -1)))
+	require.True(t, comps.insideHit)
+	// normal would have been (0, 0, 1), but is inverted!
+	require.True(t, comps.objectNormalv.Equal(NewVector(0, 0, -1)))
+}

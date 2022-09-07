@@ -1,6 +1,8 @@
 package ray_tracer
 
-import "math"
+import (
+	"math"
+)
 
 type PointLight struct {
 	position  Tuple
@@ -42,4 +44,9 @@ func CalcLighting(material Material, light PointLight, position, eyeV, normalV T
 	}
 
 	return ambient.Add(diffuse).Add(specular)
+}
+
+func ShadeHit(world World, comps *IntersectionComputations) Color {
+	// TODO: Add support of multiple lights
+	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.intersectionPoint, comps.eyev, comps.objectNormalv)
 }
