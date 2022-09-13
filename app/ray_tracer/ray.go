@@ -1,7 +1,5 @@
 package ray_tracer
 
-type SceneObject interface{}
-
 // TODO: Can I do new types Point and Vector inherited from Tuple?
 type Ray struct {
 	origin    Tuple

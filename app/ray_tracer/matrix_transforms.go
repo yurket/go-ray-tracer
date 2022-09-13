@@ -81,3 +81,28 @@ func (a *Matrix) RotateZ(angleInRads float64) *Matrix {
 func (a *Matrix) Shear(xToY, xToZ, yToX, yToZ, zToX, zToY float64) *Matrix {
 	return NewShearingMatrix(xToY, xToZ, yToX, yToZ, zToX, zToY).MulMat(a)
 }
+
+// World's default orientation is looks from the origin to Z axis in negative direction
+// with UP in the positive Y direction.
+func NewViewTranformation(from, to, up Tuple) *Matrix {
+	if !from.IsPoint() || !to.IsPoint() {
+		panic("From and To must be points!")
+	}
+	if !up.IsVector() {
+		panic("UP must be a vector")
+	}
+
+	forward := to.Sub(from).Normalize()
+	left := forward.Cross(up.Normalize())
+	trueUp := left.Cross(forward)
+
+	orientation := NewMatrix([][]float64{
+		{left.x, left.y, left.z, 0},
+		{trueUp.x, trueUp.y, trueUp.z, 0},
+		{-forward.x, -forward.y, -forward.z, 0},
+		{0, 0, 0, 1},
+	})
+
+	viewTransform := orientation.MulMat(NewTranslationMatrix(-from.x, -from.y, -from.z))
+	return viewTransform
+}

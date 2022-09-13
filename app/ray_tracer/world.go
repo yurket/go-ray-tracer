@@ -5,6 +5,7 @@ import (
 	"sort"
 )
 
+type SceneObject interface{}
 type World map[string]SceneObject
 
 func NewWorld() World {
