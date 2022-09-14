@@ -35,3 +35,10 @@ Images of renders from the exercises by chapter
     <img src="./chapter06_lighted_sphere01.png" width="400"/>
 </div>
 <br/>
+
+## Chapter 7. Making a scene + camera
+
+<div align="center">
+    <img src="./chapter07_scene_highres.png"/>
+</div>
+<br/>
