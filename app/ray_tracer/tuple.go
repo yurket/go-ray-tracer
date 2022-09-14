@@ -13,19 +13,19 @@ type Tuple struct {
 	w float64
 }
 
-func newTuple(x, y, z, w float64) Tuple {
+func NewTuple(x, y, z, w float64) Tuple {
 	return Tuple{x, y, z, w}
 }
 
-func newZeroTuple() Tuple {
+func NewZeroTuple() Tuple {
 	return Tuple{0, 0, 0, 0}
 }
 
-func newPoint(x, y, z float64) Tuple {
+func NewPoint(x, y, z float64) Tuple {
 	return Tuple{x, y, z, 1.0}
 }
 
-func newVector(x, y, z float64) Tuple {
+func NewVector(x, y, z float64) Tuple {
 	return Tuple{x, y, z, 0.0}
 }
 
@@ -110,12 +110,12 @@ func (a Tuple) Cross(b Tuple) Tuple {
 		panic("Cross product isn't applicable to non-Vectors!")
 	}
 
-	return newVector(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x)
+	return NewVector(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x)
 }
 
 // returns a so called column-vector
 func (t Tuple) ToMatrix() *Matrix {
-	m := newMatrix([][]float64{
+	m := NewMatrix([][]float64{
 		{t.x},
 		{t.y},
 		{t.z},

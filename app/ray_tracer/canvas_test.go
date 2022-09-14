@@ -10,7 +10,7 @@ import (
 )
 
 func Test_newCanvas(t *testing.T) {
-	c := newCanvas(10, 20)
+	c := NewCanvas(10, 20)
 
 	require.Equal(t, c.width, 10)
 	require.Equal(t, c.height, 20)
@@ -24,7 +24,7 @@ func Test_newCanvas(t *testing.T) {
 }
 
 func TestWritingPixelsToACanvas(t *testing.T) {
-	c := newCanvas(10, 20)
+	c := NewCanvas(10, 20)
 
 	c.WritePixel(2, 3, RED)
 
@@ -32,7 +32,7 @@ func TestWritingPixelsToACanvas(t *testing.T) {
 }
 
 func TestWritingPixelsOutOfCanvasBoundsHasNoEffectOnCanvas(t *testing.T) {
-	c := newCanvas(100, 100)
+	c := NewCanvas(100, 100)
 
 	require.NotPanics(t, func() { c.WritePixel(101, 99, GREEN) })
 	require.NotPanics(t, func() { c.WritePixel(99, 101, GREEN) })
@@ -41,14 +41,14 @@ func TestWritingPixelsOutOfCanvasBoundsHasNoEffectOnCanvas(t *testing.T) {
 }
 
 func TestGettingPixelValueAtOutOfBoundCanvasCooridnatePanics(t *testing.T) {
-	c := newCanvas(2, 2)
+	c := NewCanvas(2, 2)
 
 	require.Panics(t, func() { c.PixelAt(3, 2) })
 	require.Panics(t, func() { c.PixelAt(2, 3) })
 }
 
 func TestCorrectPpmHeader(t *testing.T) {
-	c := newCanvas(5, 3)
+	c := NewCanvas(5, 3)
 
 	ppmHeader := c.ppmHeader()
 	expect := `P3
@@ -60,7 +60,7 @@ func TestCorrectPpmHeader(t *testing.T) {
 }
 
 func TestPpmPixelData(t *testing.T) {
-	canvas := newCanvas(5, 3)
+	canvas := NewCanvas(5, 3)
 
 	c1 := Color{1.5, 0, 0}
 	c2 := Color{0, 0.5, 0}
@@ -79,7 +79,7 @@ func TestPpmPixelData(t *testing.T) {
 }
 
 func TestSplittingLongLinesInPpmData(t *testing.T) {
-	canvas := newCanvas(10, 2)
+	canvas := NewCanvas(10, 2)
 	c := Color{1, 0.8, 0.6}
 	canvas.Fill(c)
 
@@ -94,7 +94,7 @@ func TestSplittingLongLinesInPpmData(t *testing.T) {
 }
 
 func TestPpmFilesTerminatedByNewLineCharacter(t *testing.T) {
-	canvas := newCanvas(6, 7)
+	canvas := NewCanvas(6, 7)
 	ppmData := canvas.PpmData()
 
 	require.True(t, strings.HasSuffix(ppmData, "\n"))
@@ -105,7 +105,7 @@ func TestCreatingAndSavingLargePpmFileShouldBeFast(t *testing.T) {
 	timeout := time.After(2 * time.Second)
 	done := make(chan bool)
 	go func() {
-		canvas := newCanvas(500, 500)
+		canvas := NewCanvas(500, 500)
 		canvas.SavePpm(testFilename)
 
 		done <- true

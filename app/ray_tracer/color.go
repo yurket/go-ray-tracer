@@ -18,7 +18,7 @@ var BLUE Color = Color{0, 0, 1}
 var YELLOW Color = Color{1, 1, 0}
 var WHITE Color = Color{1, 1, 1}
 
-func newColor(r, g, b float64) Color {
+func NewColor(r, g, b float64) Color {
 	return Color{r, g, b}
 }
 

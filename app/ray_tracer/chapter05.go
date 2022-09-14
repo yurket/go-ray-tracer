@@ -8,26 +8,26 @@ import "fmt"
 // 2n "parameter" is the distance of the "eye" (where all the rays are coming from) to the wall (canvas)
 func Chapter05(filename string) {
 	const height, width = 100, 100
-	canvas := newCanvas(width, height)
+	canvas := NewCanvas(width, height)
 
-	s := newDefaultSphere()
+	s := NewDefaultSphere()
 	const scale, eyeCenterXY = 20., 50
 
-	transform := newIdentityMatrix(4).Scale(scale, scale, scale).Translate(eyeCenterXY, eyeCenterXY, 0)
+	transform := NewIdentityMatrix(4).Scale(scale, scale, scale).Translate(eyeCenterXY, eyeCenterXY, 0)
 	s.SetTransform(transform)
 
-	eyeOrigin := newPoint(eyeCenterXY, eyeCenterXY, 100)
+	eyeOrigin := NewPoint(eyeCenterXY, eyeCenterXY, 100)
 	hitCount := 0
 	for x := 0.; x < width; x++ {
 		for y := 0.; y < height; y++ {
-			targetCanvasPoint := newPoint(x, y, 0)
+			targetCanvasPoint := NewPoint(x, y, 0)
 			direction := targetCanvasPoint.Sub(eyeOrigin).Normalize()
 			if !direction.IsVector() {
 				panic("Directions should definitely be a vector!")
 			}
 
-			ray := newRay(eyeOrigin, direction)
-			intersections := ray.Intersect(&s)
+			ray := NewRay(eyeOrigin, direction)
+			intersections := s.IntersectWith(&ray)
 			_, ok := Hit(intersections)
 			if !ok {
 				continue
@@ -46,11 +46,11 @@ func Chapter05(filename string) {
 // Book solution doesn't scale the sphere, but uses a "virtual" which maps to the canvas
 func Chapter05BookSolution(filename string) {
 	const canvasSize = 100
-	canvas := newCanvas(canvasSize, canvasSize)
+	canvas := NewCanvas(canvasSize, canvasSize)
 
-	s := newDefaultSphere()
+	s := NewDefaultSphere()
 
-	eyeOrigin := newPoint(0, 0, -5)
+	eyeOrigin := NewPoint(0, 0, -5)
 	const wallZ, wallSize = 10, 7
 	const pixelSize = float64(wallSize) / canvasSize
 	const halfWall = wallSize / 2.
@@ -63,10 +63,10 @@ func Chapter05BookSolution(filename string) {
 		for x := 0.; x < canvasSize; x++ {
 			// compute the world x coordinate (left = -half, right = half)
 			worldX := -halfWall + pixelSize*x
-			targetPoint := newPoint(worldX, worldY, wallZ)
+			targetPoint := NewPoint(worldX, worldY, wallZ)
 			direction := targetPoint.Sub(eyeOrigin).Normalize()
-			ray := newRay(eyeOrigin, direction)
-			xs := ray.Intersect(&s)
+			ray := NewRay(eyeOrigin, direction)
+			xs := s.IntersectWith(&ray)
 			if _, ok := Hit(xs); !ok {
 				continue
 			}

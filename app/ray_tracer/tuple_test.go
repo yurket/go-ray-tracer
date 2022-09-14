@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreatingZeroTuple(t *testing.T) {
-	point := newZeroTuple()
+	point := NewZeroTuple()
 	if point.x != 0 || point.y != 0 || point.z != 0 || point.w != 0 {
 		t.Error("All components should be zero!")
 		t.Log("point: ", point)
@@ -16,7 +16,7 @@ func TestCreatingZeroTuple(t *testing.T) {
 }
 
 func TestVectorCreation(t *testing.T) {
-	v := newVector(1, 2, 3)
+	v := NewVector(1, 2, 3)
 
 	require.True(t, v.IsVector())
 }
@@ -39,8 +39,8 @@ func TestNeitherVectorNorPoint(t *testing.T) {
 }
 
 func TestTupleEquality(t *testing.T) {
-	t1 := newPoint(1, 2, 3)
-	t2 := newPoint(1, 2, 3)
+	t1 := NewPoint(1, 2, 3)
+	t2 := NewPoint(1, 2, 3)
 
 	require.True(t, t1.Equal(t2))
 }
@@ -57,38 +57,38 @@ func TestAddition(t *testing.T) {
 }
 
 func TestSubtractingTwoPointsGivesVector(t *testing.T) {
-	p1 := newPoint(3, 2, 1)
-	p2 := newPoint(5, 6, 7)
+	p1 := NewPoint(3, 2, 1)
+	p2 := NewPoint(5, 6, 7)
 
 	res := p1.Sub(p2)
-	expect := newVector(-2, -4, -6)
+	expect := NewVector(-2, -4, -6)
 
 	require.True(t, res.Equal(expect), "res %v != expected %v", res, expect)
 }
 
 func TestSubtractingTwoVectorsGivesVector(t *testing.T) {
-	v1 := newVector(1, 2, 3)
-	v2 := newVector(5, 6, 7)
+	v1 := NewVector(1, 2, 3)
+	v2 := NewVector(5, 6, 7)
 
 	res := v1.Sub(v2)
-	expect := newVector(-4, -4, -4)
+	expect := NewVector(-4, -4, -4)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestSubtractingVectorFromPointGivesPoint(t *testing.T) {
-	p := newPoint(3, 2, 1)
-	v := newVector(5, 6, 7)
+	p := NewPoint(3, 2, 1)
+	v := NewVector(5, 6, 7)
 
 	res := p.Sub(v)
-	expect := newPoint(-2, -4, -6)
+	expect := NewPoint(-2, -4, -6)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestSubtractingPointFromVectorDoesntMakeSense(t *testing.T) {
-	v := newVector(5, 6, 7)
-	p := newPoint(3, 2, 1)
+	v := NewVector(5, 6, 7)
+	p := NewPoint(3, 2, 1)
 
 	require.Panics(t, func() { v.Sub(p) })
 }
@@ -130,16 +130,16 @@ func TestZeroDivisionPanics(t *testing.T) {
 func TestMagnitude(t *testing.T) {
 	unitMagnitude := 1.0
 
-	require.True(t, equal_fp(newVector(1, 0, 0).Magnitude(), unitMagnitude))
-	require.True(t, equal_fp(newVector(0, 1, 0).Magnitude(), unitMagnitude))
-	require.True(t, equal_fp(newVector(0, 0, 1).Magnitude(), unitMagnitude))
+	require.True(t, equal_fp(NewVector(1, 0, 0).Magnitude(), unitMagnitude))
+	require.True(t, equal_fp(NewVector(0, 1, 0).Magnitude(), unitMagnitude))
+	require.True(t, equal_fp(NewVector(0, 0, 1).Magnitude(), unitMagnitude))
 
-	require.True(t, equal_fp(newVector(1, 2, 3).Magnitude(), math.Sqrt(14)))
-	require.True(t, equal_fp(newVector(-1, -2, -3).Magnitude(), math.Sqrt(14)))
+	require.True(t, equal_fp(NewVector(1, 2, 3).Magnitude(), math.Sqrt(14)))
+	require.True(t, equal_fp(NewVector(-1, -2, -3).Magnitude(), math.Sqrt(14)))
 }
 
 func TestMagnitudPanicsOnNonVectors(t *testing.T) {
-	p := newPoint(1, 2, 3)
+	p := NewPoint(1, 2, 3)
 	nonV := Tuple{1, 1, 1, 4}
 
 	require.Panics(t, func() { p.Magnitude() })
@@ -147,17 +147,17 @@ func TestMagnitudPanicsOnNonVectors(t *testing.T) {
 }
 
 func TestNormalization(t *testing.T) {
-	v := newVector(4, 0, 0)
-	vNorm := newVector(1, 0, 0)
+	v := NewVector(4, 0, 0)
+	vNorm := NewVector(1, 0, 0)
 	require.True(t, v.Normalize().Equal(vNorm))
 
-	v = newVector(1, 2, 3)
-	vNorm = newVector(0.26726, 0.53452, 0.80178)
+	v = NewVector(1, 2, 3)
+	vNorm = NewVector(0.26726, 0.53452, 0.80178)
 	require.True(t, v.Normalize().Equal(vNorm))
 }
 
 func TestNormalizationPanicsOnNonVectors(t *testing.T) {
-	p := newPoint(1, 2, 3)
+	p := NewPoint(1, 2, 3)
 	nonV := Tuple{1, 1, 1, 4}
 
 	require.Panics(t, func() { p.Normalize() })
@@ -165,8 +165,8 @@ func TestNormalizationPanicsOnNonVectors(t *testing.T) {
 }
 
 func TestDotProduct(t *testing.T) {
-	v1 := newVector(1, 2, 3)
-	v2 := newVector(-1, 0, 0)
+	v1 := NewVector(1, 2, 3)
+	v2 := NewVector(-1, 0, 0)
 
 	res := v1.Dot(v2)
 	expect := -1.0
@@ -175,34 +175,34 @@ func TestDotProduct(t *testing.T) {
 }
 
 func TestCrossProduct(t *testing.T) {
-	v1 := newVector(1, 2, 3)
-	v2 := newVector(2, 3, 4)
+	v1 := NewVector(1, 2, 3)
+	v2 := NewVector(2, 3, 4)
 
 	res := v1.Cross(v2)
-	expect := newVector(-1, 2, -1)
+	expect := NewVector(-1, 2, -1)
 	require.True(t, res.Equal(expect))
 
 	res = v2.Cross(v1)
-	expect = newVector(1, -2, 1)
+	expect = NewVector(1, -2, 1)
 	require.True(t, res.Equal(expect))
 }
 
 func TestReflectingVectorApprochingAt45Degrees(t *testing.T) {
-	v := newVector(1, -1, 0)
-	n := newVector(0, 1, 0)
+	v := NewVector(1, -1, 0)
+	n := NewVector(0, 1, 0)
 
 	res := v.ReflectAround(n)
-	expect := newVector(1, 1, 0)
+	expect := NewVector(1, 1, 0)
 
 	require.True(t, res.Equal(expect))
 }
 
 func TestReflectingVectorOffSlantedSurface(t *testing.T) {
-	v := newVector(0, -1, 0)
-	n := newVector(math.Sqrt(2)/2., math.Sqrt(2)/2., 0)
+	v := NewVector(0, -1, 0)
+	n := NewVector(math.Sqrt(2)/2., math.Sqrt(2)/2., 0)
 
 	res := v.ReflectAround(n)
-	expect := newVector(1, 0, 0)
+	expect := NewVector(1, 0, 0)
 
 	require.True(t, res.Equal(expect))
 }

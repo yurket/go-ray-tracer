@@ -8,7 +8,7 @@ type Matrix struct {
 	data    [][]float64
 }
 
-func newMatrix(data [][]float64) *Matrix {
+func NewMatrix(data [][]float64) *Matrix {
 	rows := len(data)
 	if rows == 0 {
 		panic("Invalid matrix with 0 rows!")
@@ -20,7 +20,7 @@ func newMatrix(data [][]float64) *Matrix {
 	return &Matrix{rows, cols, data}
 }
 
-func newZeroMatrix(rows int, cols int) *Matrix {
+func NewZeroMatrix(rows int, cols int) *Matrix {
 	zeroes := make([][]float64, rows)
 	for i := 0; i < rows; i++ {
 		zeroes[i] = make([]float64, cols)
@@ -29,8 +29,8 @@ func newZeroMatrix(rows int, cols int) *Matrix {
 }
 
 // Only square matrices may be identity
-func newIdentityMatrix(rowsAndCols int) *Matrix {
-	m := newZeroMatrix(rowsAndCols, rowsAndCols)
+func NewIdentityMatrix(rowsAndCols int) *Matrix {
+	m := NewZeroMatrix(rowsAndCols, rowsAndCols)
 	for i := 0; i < rowsAndCols; i++ {
 		m.data[i][i] = 1.0
 	}
@@ -77,7 +77,7 @@ func (a *Matrix) MulMat(b *Matrix) *Matrix {
 		panic(msg)
 	}
 
-	res := newZeroMatrix(a.rows, b.columns)
+	res := NewZeroMatrix(a.rows, b.columns)
 	for i := 0; i < a.rows; i++ {
 		for j := 0; j < b.columns; j++ {
 			sum := 0.0
@@ -112,13 +112,13 @@ func (a *Matrix) ToTuple() Tuple {
 
 	switch a.rows {
 	case 1:
-		return newTuple(a.At(0, 0), 0, 0, 0)
+		return NewTuple(a.At(0, 0), 0, 0, 0)
 	case 2:
-		return newTuple(a.At(0, 0), a.At(1, 0), 0, 0)
+		return NewTuple(a.At(0, 0), a.At(1, 0), 0, 0)
 	case 3:
-		return newTuple(a.At(0, 0), a.At(1, 0), a.At(2, 0), 0)
+		return NewTuple(a.At(0, 0), a.At(1, 0), a.At(2, 0), 0)
 	case 4:
-		return newTuple(a.At(0, 0), a.At(1, 0), a.At(2, 0), a.At(3, 0))
+		return NewTuple(a.At(0, 0), a.At(1, 0), a.At(2, 0), a.At(3, 0))
 	default:
 		panic(panicMsg)
 	}
@@ -135,7 +135,7 @@ func (a *Matrix) MulTuple(t Tuple) Tuple {
 }
 
 func (a *Matrix) Transpose() *Matrix {
-	transposed := newZeroMatrix(a.columns, a.rows)
+	transposed := NewZeroMatrix(a.columns, a.rows)
 	for i := 0; i < a.rows; i++ {
 		for j := 0; j < a.columns; j++ {
 			transposed.data[j][i] = a.data[i][j]
@@ -214,7 +214,7 @@ func (a *Matrix) Inverse() *Matrix {
 		panic("Trying to invert non-invertible matrix!")
 	}
 
-	cofactors := newZeroMatrix(a.rows, a.columns)
+	cofactors := NewZeroMatrix(a.rows, a.columns)
 	for i := 0; i < a.rows; i++ {
 		for j := 0; j < a.columns; j++ {
 			cofactors.data[i][j] = a.Cofactor(i, j)
