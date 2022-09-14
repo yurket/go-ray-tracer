@@ -84,7 +84,7 @@ func (a *Matrix) Shear(xToY, xToZ, yToX, yToZ, zToX, zToY float64) *Matrix {
 
 // World's default orientation is looks from the origin to Z axis in negative direction
 // with UP in the positive Y direction.
-func NewViewTranformation(from, to, up Tuple) *Matrix {
+func NewViewTransformation(from, to, up Tuple) *Matrix {
 	if !from.IsPoint() || !to.IsPoint() {
 		panic("From and To must be points!")
 	}

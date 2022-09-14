@@ -59,3 +59,12 @@ func TestChapter06LightAndShading(t *testing.T) {
 
 	cleanup(filename)
 }
+
+func TestChapter07MakingAScene(t *testing.T) {
+	filename := "chapter07_scene.ppm"
+
+	require.NotPanics(t, func() { Chapter07MakingAScene(filename) })
+	require.FileExists(t, filename)
+
+	cleanup(filename)
+}

@@ -208,7 +208,7 @@ func TestScaleAndRotationOrderDoesntMatter(t *testing.T) {
 func TestViewTransformationForDefaultOrientationIsIdentity(t *testing.T) {
 	from, to, up := NewPoint(0, 0, 0), NewPoint(0, 0, -1), NewVector(0, 1, 0)
 
-	viewTransform := NewViewTranformation(from, to, up)
+	viewTransform := NewViewTransformation(from, to, up)
 
 	require.True(t, viewTransform.Equal(NewIdentityMatrix(4)))
 }
@@ -217,7 +217,7 @@ func TestViewTransformWhenLookingBack(t *testing.T) {
 	from, to, up := NewPoint(0, 0, 0), NewPoint(0, 0, +1), NewVector(0, 1, 0)
 
 	expect := NewIdentityMatrix(4).Scale(-1, 1, -1)
-	viewTransform := NewViewTranformation(from, to, up)
+	viewTransform := NewViewTransformation(from, to, up)
 
 	require.True(t, expect.Equal(viewTransform))
 }
@@ -227,7 +227,7 @@ func TestViewTransformationMovesTheWorldAndNotTheEye(t *testing.T) {
 
 	// the whole world is moved 8 units away from the eye positioned at the origin
 	expect := NewTranslationMatrix(0, 0, -8)
-	viewTransform := NewViewTranformation(from, to, up)
+	viewTransform := NewViewTransformation(from, to, up)
 
 	require.True(t, expect.Equal(viewTransform))
 }
@@ -241,7 +241,7 @@ func TestArbitraryViewTransform(t *testing.T) {
 		{-0.35857, 0.59761, -0.71714, 0.00000},
 		{0, 0, 0, 1},
 	})
-	viewTransform := NewViewTranformation(from, to, up)
+	viewTransform := NewViewTransformation(from, to, up)
 
 	require.True(t, expect.Equal(viewTransform))
 }
