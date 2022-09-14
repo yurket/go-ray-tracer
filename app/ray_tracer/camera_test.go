@@ -60,7 +60,7 @@ func TestRenderingAWorldWithACamera(t *testing.T) {
 	c := NewCamera(11, 11, math.Pi/2)
 	from, to, up := NewPoint(0, 0, -5), NewPoint(0, 0, 0), NewVector(0, 1, 0)
 	c.transform = *NewViewTransformation(from, to, up)
-	image := Render(c, w)
+	image := c.Render(w)
 
 	expect := NewColor(0.38066, 0.47583, 0.2855)
 	res := image.PixelAt(5, 5)

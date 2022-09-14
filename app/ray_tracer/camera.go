@@ -61,7 +61,7 @@ func (c *Camera) CastRayIntoPixel(px, py int) Ray {
 	return NewRay(origin, direction)
 }
 
-func Render(c Camera, w World) Canvas {
+func (c *Camera) Render(w World) Canvas {
 	canvas := NewCanvas(c.hSize, c.vSize)
 	for y := 0; y < c.vSize; y++ {
 		for x := 0; x < c.hSize; x++ {

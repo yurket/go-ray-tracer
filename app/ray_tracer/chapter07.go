@@ -58,6 +58,6 @@ func Chapter07MakingAScene(filename string) {
 	from, to, up := NewPoint(0, 1.5, -5), NewPoint(0, 1, 0), NewVector(0, 1, 0)
 	camera.transform = *NewViewTransformation(from, to, up)
 
-	canvas := Render(camera, w)
+	canvas := camera.Render(w)
 	canvas.SavePpm(filename)
 }
