@@ -27,7 +27,7 @@ func TestLightingWithEyeBetweenLightAndSurface(t *testing.T) {
 
 	i := 0.1 + 0.9 + 0.9
 	expect := NewColor(i, i, i)
-	res := CalcLighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal, false)
 
 	require.True(t, res.Equal(expect))
 }
@@ -40,7 +40,7 @@ func TestLightingWithEyeOffset45DegreesBetweenLightAndSurface(t *testing.T) {
 
 	i := 0.1 + 0.9 + 0
 	expect := NewColor(i, i, i)
-	res := CalcLighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal, false)
 
 	require.True(t, res.Equal(expect))
 }
@@ -53,7 +53,7 @@ func TestLightingWithEyeOppositeSurfaceAndLightOffset45Degrees(t *testing.T) {
 
 	i := 0.1 + 0.9*COS45 + 0
 	expect := NewColor(i, i, i)
-	res := CalcLighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal, false)
 
 	require.True(t, res.Equal(expect))
 }
@@ -66,7 +66,7 @@ func TestLightingWithEyeInThePathOfReflectionVector(t *testing.T) {
 
 	i := 0.1 + 0.9*COS45 + 0.9
 	expect := NewColor(i, i, i)
-	res := CalcLighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal, false)
 
 	require.True(t, res.Equal(expect))
 }
@@ -79,7 +79,7 @@ func TestLightingWithLightBehindTheSurface(t *testing.T) {
 
 	i := 0.1 + 0 + 0
 	expect := NewColor(i, i, i)
-	res := CalcLighting(m, light, pos, eye, normal)
+	res := CalcLighting(m, light, pos, eye, normal, false)
 
 	require.True(t, res.Equal(expect))
 }
@@ -108,6 +108,20 @@ func TestShadingAnIntersectionFromTheInside(t *testing.T) {
 
 	expect := NewColor(0.90498, 0.90498, 0.90498)
 	res := ShadeHit(w, &comps)
+
+	require.True(t, expect.Equal(res))
+}
+
+func TestLightingWithTheSurfaceInShadow(t *testing.T) {
+	ambientColor := 0.1
+	m, pos := NewMaterial(WHITE, ambientColor, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
+	eye := NewVector(0, 0, -1)
+	normal := NewVector(0, 0, -1)
+	light := NewPointLight(NewPoint(0, 0, -10), WHITE)
+	inShadow := true
+
+	expect := NewColor(ambientColor, ambientColor, ambientColor)
+	res := CalcLighting(m, light, pos, eye, normal, inShadow)
 
 	require.True(t, expect.Equal(res))
 }

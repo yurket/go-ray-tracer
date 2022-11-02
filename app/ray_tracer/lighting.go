@@ -13,7 +13,7 @@ func NewPointLight(position Tuple, intensity Color) PointLight {
 	return PointLight{position: position, intensity: intensity}
 }
 
-func CalcLighting(material Material, light PointLight, position, eyeV, normalV Tuple) Color {
+func CalcLighting(material Material, light PointLight, position, eyeV, normalV Tuple, isInShadow bool) Color {
 	if !position.IsPoint() {
 		panic("Position must be a point!")
 	}
@@ -25,6 +25,10 @@ func CalcLighting(material Material, light PointLight, position, eyeV, normalV T
 	effectiveColor := material.color.MultHadamar(light.intensity)
 	ligthV := light.position.Sub(position).Normalize()
 	ambient := effectiveColor.MultScalar(material.ambient)
+
+	if isInShadow {
+		return ambient
+	}
 
 	// negative dot product means the light is on the other side of the surface
 	// and should not contribute to the final lighting
@@ -48,5 +52,5 @@ func CalcLighting(material Material, light PointLight, position, eyeV, normalV T
 
 func ShadeHit(world World, comps *IntersectionComputations) Color {
 	// TODO: Add support of multiple lights
-	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.intersectionPoint, comps.eyev, comps.objectNormalv)
+	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.intersectionPoint, comps.eyev, comps.objectNormalv, false)
 }

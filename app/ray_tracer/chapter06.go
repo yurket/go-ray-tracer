@@ -38,7 +38,8 @@ func Chapter06LightAndShading(filename string) {
 			intersectionPoint := ray.CalcPosition(hit.time)
 			normal := sphere.NormalAt(intersectionPoint)
 			eye := ray.direction.Mul(-1)
-			colorOnTheSphere := CalcLighting(m, light, intersectionPoint, eye, normal)
+			isInShadow := false
+			colorOnTheSphere := CalcLighting(m, light, intersectionPoint, eye, normal, isInShadow)
 
 			shadowX, shadowY := canvas.ToCanvasCoordinates(x, y)
 			canvas.WritePixel(shadowX, shadowY, colorOnTheSphere)
