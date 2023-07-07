@@ -125,3 +125,33 @@ func TestLightingWithTheSurfaceInShadow(t *testing.T) {
 
 	require.True(t, expect.Equal(res))
 }
+
+// Remember, that for all shadow tests light is at (-10, 10, -10)
+func TestPointIsNotShadowedAndNotCollinear(t *testing.T) {
+	w := NewDefaultWorld()
+
+	p := NewPoint(0, 10, 0)
+
+	require.False(t, IsShadowed(w, p))
+}
+
+func TestPointIsShadowedBySphere(t *testing.T) {
+	w := NewDefaultWorld()
+	p := NewPoint(10, -10, 10)
+
+	require.True(t, IsShadowed(w, p))
+}
+
+func TestPointIsNotShadowedAndBehindTheLight(t *testing.T) {
+	w := NewDefaultWorld()
+	p := NewPoint(-20, 20, -20)
+
+	require.False(t, IsShadowed(w, p))
+}
+
+func TestPointIsNotShadowedAndBetweenTheLightAndSphere(t *testing.T) {
+	w := NewDefaultWorld()
+	p := NewPoint(-2, 2, -2)
+
+	require.False(t, IsShadowed(w, p))
+}

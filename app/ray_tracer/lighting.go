@@ -54,3 +54,17 @@ func ShadeHit(world World, comps *IntersectionComputations) Color {
 	// TODO: Add support of multiple lights
 	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.intersectionPoint, comps.eyev, comps.objectNormalv, false)
 }
+
+func IsShadowed(world World, point Tuple) bool {
+	point_to_light := world.Light().position.Sub(point)
+	distance := point_to_light.Magnitude()
+	point_to_light_ray := NewRay(point, point_to_light.Normalize())
+
+	intersections := world.IntersectWith(&point_to_light_ray)
+	i, wasHit := Hit(intersections)
+	if !wasHit {
+		return false
+	}
+
+	return i.time < distance
+}
