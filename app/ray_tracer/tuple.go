@@ -37,6 +37,16 @@ func (t *Tuple) IsVector() bool {
 	return equal_fp(t.w, 0.0)
 }
 
+func (t *Tuple) AsPoint() Tuple {
+	t.w = 1.0
+	return *t
+}
+
+func (t *Tuple) AsVector() Tuple {
+	t.w = 0.
+	return *t
+}
+
 const EPSILON = 1e-5
 
 func equal_fp(a float64, b float64) bool {

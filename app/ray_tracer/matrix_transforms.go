@@ -20,7 +20,8 @@ func NewScalingMatrix(x, y, z float64) *Matrix {
 	return scaling
 }
 
-// Left-handed coordinate system is used in all rotations
+// Left-handed coordinate system is used in all rotations with +Y pointing up
+// and +X from the screen towards you
 func NewRotationXMatrix(angleInRads float64) *Matrix {
 	rot := NewIdentityMatrix(4)
 	rot.data[1][1] = math.Cos(angleInRads)
