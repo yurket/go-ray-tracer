@@ -112,18 +112,18 @@ func TestShadingAnIntersectionFromTheInside(t *testing.T) {
 	require.True(t, expect.Equal(res))
 }
 
-func TestShadowing(t *testing.T) {
+func TestOneSphereShadowingPointOfIntersectionWithOtherSphere(t *testing.T) {
 	world := NewWorld()
 	pl := NewPointLight(NewPoint(0, 0, -10), WHITE)
 	world.SetLight(pl)
 
 	default_material := NewDefaultMaterial()
 	s1 := NewSphere("s1", default_material)
-	world["s1"] = s1
+	world["s1"] = &s1
 
 	s2 := NewSphere("s2", default_material)
 	s2.SetTransform(NewTranslationMatrix(0, 0, 10))
-	world["s2"] = s2
+	world["s2"] = &s2
 
 	r := NewRay(NewPoint(0, 0, 5), NewVector(0, 0, 1))
 	unit_radius := 1.
