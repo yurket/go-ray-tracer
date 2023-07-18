@@ -112,6 +112,30 @@ func TestShadingAnIntersectionFromTheInside(t *testing.T) {
 	require.True(t, expect.Equal(res))
 }
 
+func TestShadowing(t *testing.T) {
+	world := NewWorld()
+	pl := NewPointLight(NewPoint(0, 0, -10), WHITE)
+	world.SetLight(pl)
+
+	default_material := NewDefaultMaterial()
+	s1 := NewSphere("s1", default_material)
+	world["s1"] = s1
+
+	s2 := NewSphere("s2", default_material)
+	s2.SetTransform(NewTranslationMatrix(0, 0, 10))
+	world["s2"] = s2
+
+	r := NewRay(NewPoint(0, 0, 5), NewVector(0, 0, 1))
+	unit_radius := 1.
+	distance_to_s2 := (10. - unit_radius) - r.origin.z
+	i := NewIntersection(distance_to_s2, &s2)
+	comps := PrepareIntersectionComputations(i, r)
+	color_at_intersection := ShadeHit(world, &comps)
+	expected_ambient_color := NewColor(0.1, 0.1, 0.1)
+
+	require.Equal(t, expected_ambient_color, color_at_intersection)
+}
+
 func TestLightingWithTheSurfaceInShadow(t *testing.T) {
 	ambientColor := 0.1
 	m, pos := NewMaterial(WHITE, ambientColor, 0.9, 0.9, 200.), NewPoint(0, 0, 0)
@@ -126,7 +150,7 @@ func TestLightingWithTheSurfaceInShadow(t *testing.T) {
 	require.True(t, expect.Equal(res))
 }
 
-// Remember, that for all shadow tests light is at (-10, 10, -10)
+// For all shadow tests light is at (-10, 10, -10)
 func TestPointIsNotShadowedAndNotCollinear(t *testing.T) {
 	w := NewDefaultWorld()
 

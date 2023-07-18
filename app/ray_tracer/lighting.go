@@ -51,13 +51,18 @@ func CalcLighting(material Material, light PointLight, position, eyeV, normalV T
 }
 
 func ShadeHit(world World, comps *IntersectionComputations) Color {
-	// TODO: Add support of multiple lights
-	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.intersectionPoint, comps.eyev, comps.objectNormalv, false)
+	// TODO: Add support of multiple lights``
+
+	isShadowed := IsShadowed(world, comps.overPoint)
+	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.overPoint,
+		comps.eyev, comps.objectNormalv, isShadowed)
 }
 
+// Checks if theres smth between point and the light source.
+// What to do if there are 1+ light sources?
 func IsShadowed(world World, point Tuple) bool {
 	point_to_light := world.Light().position.Sub(point)
-	distance := point_to_light.Magnitude()
+	distance_to_light := point_to_light.Magnitude()
 	point_to_light_ray := NewRay(point, point_to_light.Normalize())
 
 	intersections := world.IntersectWith(&point_to_light_ray)
@@ -66,5 +71,5 @@ func IsShadowed(world World, point Tuple) bool {
 		return false
 	}
 
-	return i.time < distance
+	return i.time < distance_to_light
 }

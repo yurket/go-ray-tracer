@@ -113,3 +113,16 @@ func TestTheHitWithInsideIntersection(t *testing.T) {
 	// normal would have been (0, 0, 1), but is inverted!
 	require.True(t, comps.objectNormalv.Equal(NewVector(0, 0, -1)))
 }
+
+// Test, that "acne effect" can be successfully overcome
+func TestTheHitShouldOffsetThePoint(t *testing.T) {
+	r := NewRay(NewPoint(0, 0, -5), NewVector(0, 0, 1))
+	s := NewDefaultSphere()
+	s.SetTransform(NewTranslationMatrix(0, 0, 1))
+	i := NewIntersection(5, &s)
+
+	comps := PrepareIntersectionComputations(i, r)
+
+	require.Less(t, comps.overPoint.z, -EPSILON/2)
+	require.Greater(t, comps.intersectionPoint.z, comps.overPoint.z)
+}
