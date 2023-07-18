@@ -13,6 +13,8 @@ Exapmles of the renders:
 
 <div align="center">
 
-<img src="./gallery/chapter07_scene.png" width="500"/>
+<img src="./gallery/chapter08_shadows.png" width="500"/>
 
 </div>
+
+Other renders can be found in [gallery](./gallery/README.md).

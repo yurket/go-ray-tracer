@@ -72,14 +72,14 @@ func (s *Sphere) IntersectWith(r *Ray) []Intersection {
 func (s *Sphere) NormalAt(worldPoint Tuple) Tuple {
 	sphereCenter := NewPoint(0, 0, 0)
 
-	objectPoint := s.transform.Inverse().MulTuple(worldPoint)
-	objectNormal := objectPoint.Sub(sphereCenter)
-	// Don't understand why transpose here added
-	worldNormal := s.transform.Inverse().Transpose().MulTuple(objectNormal)
-	worldNormal.w = 0
+	objectSpacePoint := s.transform.Inverse().MulTuple(worldPoint)
+	objectSpaceNormal := objectSpacePoint.Sub(sphereCenter)
+	// For usual point we could just multiply by a sphere's transformation matrix to
+	// transform vector from Object space to World space. But for normals it doesn't work,
+	// because it transforms them in undesired way (e.g. squishing normals along with squishing
+	// the object)
+	normalInWorldSpace := s.transform.Inverse().Transpose().MulTuple(objectSpaceNormal)
+	normalInWorldSpace = normalInWorldSpace.AsVector().Normalize()
 
-	if !worldNormal.IsVector() {
-		panic("Normal vector must be a vector!")
-	}
-	return worldNormal.Normalize()
+	return normalInWorldSpace
 }

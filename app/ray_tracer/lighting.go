@@ -13,7 +13,7 @@ func NewPointLight(position Tuple, intensity Color) PointLight {
 	return PointLight{position: position, intensity: intensity}
 }
 
-func CalcLighting(material Material, light PointLight, position, eyeV, normalV Tuple) Color {
+func CalcLighting(material Material, light PointLight, position, eyeV, normalV Tuple, isInShadow bool) Color {
 	if !position.IsPoint() {
 		panic("Position must be a point!")
 	}
@@ -25,6 +25,10 @@ func CalcLighting(material Material, light PointLight, position, eyeV, normalV T
 	effectiveColor := material.color.MultHadamar(light.intensity)
 	ligthV := light.position.Sub(position).Normalize()
 	ambient := effectiveColor.MultScalar(material.ambient)
+
+	if isInShadow {
+		return ambient
+	}
 
 	// negative dot product means the light is on the other side of the surface
 	// and should not contribute to the final lighting
@@ -47,6 +51,25 @@ func CalcLighting(material Material, light PointLight, position, eyeV, normalV T
 }
 
 func ShadeHit(world World, comps *IntersectionComputations) Color {
-	// TODO: Add support of multiple lights
-	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.intersectionPoint, comps.eyev, comps.objectNormalv)
+	// TODO: Add support of multiple lights``
+
+	isShadowed := IsShadowed(world, comps.overPoint)
+	return CalcLighting(comps.intersectionObject.material, world.Light(), comps.overPoint,
+		comps.eyev, comps.objectNormalv, isShadowed)
+}
+
+// Checks if theres smth between point and the light source.
+// What to do if there are 1+ light sources?
+func IsShadowed(world World, point Tuple) bool {
+	point_to_light := world.Light().position.Sub(point)
+	distance_to_light := point_to_light.Magnitude()
+	point_to_light_ray := NewRay(point, point_to_light.Normalize())
+
+	intersections := world.IntersectWith(&point_to_light_ray)
+	i, wasHit := Hit(intersections)
+	if !wasHit {
+		return false
+	}
+
+	return i.time < distance_to_light
 }

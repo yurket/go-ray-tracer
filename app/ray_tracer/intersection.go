@@ -28,6 +28,7 @@ type IntersectionComputations struct {
 	intersectionTime   float64
 	intersectionObject *Sphere
 	intersectionPoint  Tuple
+	overPoint          Tuple
 	eyev               Tuple
 	objectNormalv      Tuple
 	insideHit          bool
@@ -47,6 +48,10 @@ func PrepareIntersectionComputations(i Intersection, r Ray) IntersectionComputat
 		comps.insideHit = true
 		comps.objectNormalv = comps.objectNormalv.Mul(-1)
 	}
+
+	// A point, very close to the intersection point, but adjusted a bit into the
+	// direction of a normal. Used to fight the "acne effect", while testing for shadowing
+	comps.overPoint = comps.intersectionPoint.Add(comps.objectNormalv.Mul(EPSILON))
 
 	return comps
 }

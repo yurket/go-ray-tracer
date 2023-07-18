@@ -42,3 +42,10 @@ Images of renders from the exercises by chapter
     <img src="./chapter07_scene_highres.png"/>
 </div>
 <br/>
+
+## Chapter8. Shadows
+
+<div align="center">
+    <img src="./chapter08_shadows.png"/>
+</div>
+<br/>

@@ -12,7 +12,7 @@ func NewWorld() World {
 	return World{}
 }
 
-// Default world is hardcoded and contains 2 spheres "s1" and "s2" and point light "light"
+// Default world is hardcoded and contains 2 spheres "s1" and "s2" and point light "light".
 // Spheres' origins in the (0,0,0) and s2 is 2 times smaller than s1. Hence s1 may be conidered
 // as an outer sphere, and s1 is an inner sphere
 func NewDefaultWorld() World {
