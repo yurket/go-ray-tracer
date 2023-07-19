@@ -15,22 +15,6 @@ func TestCreatingSphereWithMaterial(t *testing.T) {
 	require.Equal(t, m, s.material)
 }
 
-func TestSpheresDefaultTransofrmationIsIdentity(t *testing.T) {
-	s := NewDefaultSphere()
-
-	require.True(t, s.transform.Equal(NewIdentityMatrix(4)))
-}
-
-func TestSettingSphereTransformation(t *testing.T) {
-	s := NewDefaultSphere()
-	translation := NewTranslationMatrix(2, 3, 4)
-
-	s.SetTransform(translation)
-
-	transform := s.Transform()
-	require.True(t, transform.Equal(translation))
-}
-
 func TestIntersectingScaledSphereWithRay(t *testing.T) {
 	origin, direction := NewPoint(0, 0, -5), NewVector(0, 0, 1)
 	r := NewRay(origin, direction)

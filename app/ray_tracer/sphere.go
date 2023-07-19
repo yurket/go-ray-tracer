@@ -4,27 +4,30 @@ import "math"
 
 // Unit sphere (radius == 1), with a center in (0,0,0)
 type Sphere struct {
-	id        string
-	origin    Tuple
-	transform Matrix
-	material  Material
+	Shape
+	id     string
+	origin Tuple
 }
 
 func NewSphere(id string, material Material) Sphere {
 	return Sphere{
-		id:        id,
-		origin:    NewPoint(0, 0, 0),
-		transform: *NewIdentityMatrix(4),
-		material:  material,
+		Shape: Shape{
+			transform: *NewIdentityMatrix(4),
+			material:  material,
+		},
+		id:     id,
+		origin: NewPoint(0, 0, 0),
 	}
 }
 
 func NewDefaultSphere() Sphere {
 	return Sphere{
-		id:        "sphere_id",
-		origin:    NewPoint(0, 0, 0),
-		transform: *NewIdentityMatrix(4),
-		material:  NewDefaultMaterial(),
+		Shape: Shape{
+			transform: *NewIdentityMatrix(4),
+			material:  NewDefaultMaterial(),
+		},
+		id:     "sphere_id",
+		origin: NewPoint(0, 0, 0),
 	}
 }
 
@@ -32,14 +35,6 @@ func (s *Sphere) Equal(s2 *Sphere) bool {
 	return s.id == s2.id &&
 		s.origin.Equal(s2.origin) &&
 		s.transform.Equal(&s2.transform)
-}
-
-func (s *Sphere) Transform() Matrix {
-	return s.transform
-}
-
-func (s *Sphere) SetTransform(m *Matrix) {
-	s.transform = *m
 }
 
 // Finds intersection of a ray going through the center of the sphere with a unit radius
